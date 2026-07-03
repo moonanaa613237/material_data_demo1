@@ -1,0 +1,3740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>素材看板日报</title>
+    <style>
+        :root {
+            --bg: #f4f5f7;
+            --panel: #ffffff;
+            --panel-soft: #fbfbfc;
+            --border: #e6eaf2;
+            --border-strong: #d8dfeb;
+            --text-strong: #1f2937;
+            --text-main: #303133;
+            --text-regular: #606266;
+            --text-muted: #98a2b3;
+            --blue: #3b82f6;
+            --blue-soft: #eef4ff;
+            --teal: #18b5b9;
+            --teal-soft: #ecfcfd;
+            --purple: #7c78ea;
+            --purple-soft: #f1efff;
+            --orange: #ffad36;
+            --orange-soft: #fff4e4;
+            --green: #49b87a;
+            --green-soft: #e9fbf3;
+            --danger: #ff8d62;
+            --danger-soft: #fff1e9;
+            --shadow: 0 10px 30px rgba(25, 42, 70, 0.08);
+            --radius-xl: 22px;
+            --radius-lg: 18px;
+            --radius-md: 14px;
+            --font: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-width: 1480px;
+            background:
+                radial-gradient(circle at top center, rgba(255, 255, 255, 0.96), rgba(244, 245, 247, 0.82) 38%, rgba(244, 245, 247, 1) 78%),
+                var(--bg);
+            color: var(--text-main);
+            font-family: var(--font);
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .page-shell {
+            padding: 18px 18px 28px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 18px;
+            padding: 8px 6px 2px;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(180deg, #4d8fff, #2f6fda);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.28);
+        }
+
+        .brand-title {
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            color: #1d2737;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-regular);
+        }
+
+        .top-icon {
+            width: 18px;
+            height: 18px;
+            color: #1f2937;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #2f6fda;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(230, 234, 242, 0.9);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-panel {
+            padding: 18px 18px 20px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 16px 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field.is-collapsed-hidden {
+            display: none;
+        }
+
+        .field-label {
+            padding-left: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .field-control,
+        .filter-button {
+            height: 34px;
+            border-radius: 9px;
+            border: 1px solid var(--border-strong);
+            background: #fff;
+            color: #4b5563;
+            font-size: 13px;
+            padding: 0 12px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .field-control:focus,
+        .filter-button:focus,
+        .action-button:focus,
+        .drawer-button:focus {
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+        .field-control:hover,
+        .filter-button:hover,
+        .action-button:hover,
+        .drawer-button:hover {
+            border-color: #c5d0e0;
+        }
+
+        .filter-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-actions-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1 1 720px;
+            min-height: 36px;
+            min-width: 0;
+        }
+
+        .filter-summary-label {
+            flex: 0 0 auto;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .filter-toggle-button {
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid #d8dfeb;
+            background: #fff;
+            color: #35507d;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .filter-summary-list {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 0;
+        }
+
+        .filter-summary-empty {
+            color: #98a2b3;
+            font-size: 12px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 280px;
+            min-height: 32px;
+            padding: 0 10px 0 12px;
+            border-radius: 999px;
+            border: 1px solid #d9e6ff;
+            background: #f6f9ff;
+            color: #35507d;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .filter-chip-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .filter-chip-remove {
+            width: 18px;
+            height: 18px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.12);
+            color: #2f6fda;
+            font-size: 12px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .range-field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 34px;
+        }
+
+        .range-field .field-control {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .metric-filter {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 110px;
+            gap: 8px;
+        }
+
+        .range-separator {
+            color: #98a2b3;
+            font-size: 12px;
+            flex: 0 0 auto;
+        }
+
+        .action-button {
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            padding: 0 15px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .action-button:hover,
+        .drawer-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .action-secondary {
+            background: #fff;
+            border-color: var(--border-strong);
+            color: #4b5563;
+        }
+
+        .action-primary {
+            background: linear-gradient(180deg, #4d8fff, #2f6fda);
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.22);
+        }
+
+        .table-panel {
+            margin-top: 14px;
+            padding: 10px 12px 12px;
+            overflow: hidden;
+        }
+
+        .table-tools {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 2px 2px 12px;
+        }
+
+        .table-head-main {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .table-head-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .aggregate-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .table-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #24324a;
+        }
+
+        .table-subtitle {
+            color: #8a94a8;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .aggregate-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 36px;
+            padding: 0 12px;
+            border: 1px solid #d8dfeb;
+            border-radius: 10px;
+            background: #f8fbff;
+            color: #35507d;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .aggregate-toggle input {
+            width: 14px;
+            height: 14px;
+            accent-color: #2f6fda;
+        }
+
+        .aggregate-hint {
+            color: #8a94a8;
+            font-size: 12px;
+        }
+
+        .aggregate-mode-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .caliber-mode-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .aggregate-mode-button,
+        .toolbar-button {
+            height: 34px;
+            border-radius: 10px;
+            padding: 0 12px;
+            border: 1px solid #d8dfeb;
+            background: #fff;
+            color: #4b5563;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+        }
+
+        .aggregate-mode-button.active {
+            border-color: transparent;
+            background: linear-gradient(180deg, #4d8fff, #2f6fda);
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.16);
+        }
+
+        .aggregate-mode-button:disabled {
+            cursor: not-allowed;
+            color: #a5afbf;
+            background: #f8fafc;
+            border-color: #e5eaf3;
+            box-shadow: none;
+        }
+
+        .toolbar-button.primary {
+            border-color: transparent;
+            background: linear-gradient(180deg, #4d8fff, #2f6fda);
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.16);
+        }
+
+        .bulk-toolbar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+            padding: 12px 14px;
+            border: 1px solid #d9e6ff;
+            border-radius: 14px;
+            background: linear-gradient(180deg, #f8fbff, #f1f6ff);
+        }
+
+        .bulk-toolbar.active {
+            display: flex;
+        }
+
+        .bulk-summary {
+            color: #3f4d67;
+            font-size: 13px;
+        }
+
+        .bulk-summary strong {
+            color: #1f2937;
+            font-size: 16px;
+            margin: 0 2px;
+        }
+
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .bulk-button {
+            height: 34px;
+            border-radius: 10px;
+            padding: 0 12px;
+            border: 1px solid #d8dfeb;
+            background: #fff;
+            color: #35507d;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .bulk-button.primary {
+            border-color: transparent;
+            background: linear-gradient(180deg, #4d8fff, #2f6fda);
+            color: #fff;
+        }
+
+        .table-scroller {
+            overflow: auto;
+            max-height: calc(100vh - 270px);
+            border-radius: 16px;
+            border: 1px solid rgba(230, 234, 242, 0.7);
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1850px;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: #ffffff;
+            color: #4b5563;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-align: left;
+            padding: 14px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody td {
+            position: relative;
+            padding: 12px 10px;
+            vertical-align: top;
+            border-bottom: 1px solid #edf1f7;
+            font-size: 13px;
+            color: #374151;
+            white-space: nowrap;
+            background: #fff;
+        }
+
+        tbody tr:hover td {
+            background: #fbfdff;
+        }
+
+        .summary-row td {
+            position: sticky;
+            top: 41px;
+            z-index: 25;
+            background: #fbfcff;
+            border-bottom: 1px solid #e3e9f5;
+            font-weight: 700;
+            color: #25324b;
+        }
+
+        .col-material {
+            min-width: 188px;
+        }
+
+        .col-material-tag {
+            min-width: 150px;
+        }
+
+        .col-select {
+            width: 44px;
+            min-width: 44px;
+        }
+
+        .col-trace {
+            min-width: 170px;
+        }
+
+        .material-cell {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            flex: 0 0 auto;
+            background-size: cover;
+            background-position: center;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+        }
+
+        .thumb-video-1 {
+            background-image: linear-gradient(135deg, rgba(31, 86, 159, 0.45), rgba(74, 209, 203, 0.3)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%2317364f'/%3E%3Cpath d='M0 90 L30 54 L50 72 L78 28 L120 80 V120 H0Z' fill='%2328b0b8' opacity='.75'/%3E%3Ccircle cx='95' cy='26' r='10' fill='%23fefefe' opacity='.85'/%3E%3C/svg%3E");
+        }
+
+        .thumb-img-1 {
+            background-image: linear-gradient(135deg, rgba(93, 92, 203, 0.3), rgba(255, 132, 199, 0.16)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23416fbf'/%3E%3Ccircle cx='60' cy='52' r='26' fill='%23e7d4e9'/%3E%3Cpath d='M24 108c7-24 25-36 37-36s29 8 36 36' fill='%236b3b68'/%3E%3Cpath d='M40 48c7-12 17-18 30-18 8 0 16 3 23 9' stroke='%23f9f0ff' stroke-width='8' fill='none'/%3E%3C/svg%3E");
+        }
+
+        .thumb-product-1 {
+            background-image: linear-gradient(135deg, rgba(0, 153, 255, 0.12), rgba(255, 255, 255, 0.12)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23d7edf9'/%3E%3Crect x='44' y='22' width='32' height='72' rx='8' fill='%23ffffff' stroke='%239cc7de' stroke-width='4'/%3E%3Crect x='40' y='30' width='40' height='10' rx='5' fill='%232495d8'/%3E%3Crect x='48' y='50' width='24' height='24' rx='4' fill='%23dff6ff' stroke='%239cc7de' stroke-width='3'/%3E%3C/svg%3E");
+        }
+
+        .thumb-video-2 {
+            background-image: linear-gradient(135deg, rgba(24, 24, 24, 0.06), rgba(255, 255, 255, 0.06)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23111111'/%3E%3Cpath d='M0 90 L34 70 L56 74 L95 42 L120 48 V120 H0Z' fill='%232e3342'/%3E%3Cpath d='M18 72 H86' stroke='%23efefef' stroke-width='2' opacity='.5'/%3E%3Crect x='34' y='28' width='52' height='20' rx='4' fill='%234e90ff' opacity='.75'/%3E%3C/svg%3E");
+        }
+
+        .thumb-video-3 {
+            background-image: linear-gradient(135deg, rgba(54, 31, 23, 0.18), rgba(246, 212, 168, 0.18)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23392b23'/%3E%3Ccircle cx='58' cy='46' r='22' fill='%23b49272'/%3E%3Cpath d='M25 105c6-20 19-31 38-31 16 0 31 8 39 31' fill='%23544a44'/%3E%3Cpath d='M42 37c10-12 26-16 39-10' stroke='%23876650' stroke-width='8' fill='none'/%3E%3C/svg%3E");
+        }
+
+        .thumb-img-2 {
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(69, 130, 255, 0.14)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23eef2f8'/%3E%3Crect x='18' y='26' width='84' height='68' rx='8' fill='%23ffffff' stroke='%23b7c7dd' stroke-width='4'/%3E%3Cpath d='M30 44 H88' stroke='%236f8fc1' stroke-width='6'/%3E%3Cpath d='M30 60 H78' stroke='%2390a7cf' stroke-width='6'/%3E%3Cpath d='M30 76 H68' stroke='%23b0bdd8' stroke-width='6'/%3E%3C/svg%3E");
+        }
+
+        .thumb-img-3 {
+            background-image: linear-gradient(135deg, rgba(255, 229, 229, 0.16), rgba(255, 255, 255, 0.16)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23f1ece6'/%3E%3Ccircle cx='60' cy='44' r='20' fill='%23f3d0ba'/%3E%3Cpath d='M31 104c6-22 19-33 29-33 12 0 26 8 31 33' fill='%23efe5df'/%3E%3Cpath d='M45 36c12-8 28-8 40 1' stroke='%233f302b' stroke-width='8' fill='none'/%3E%3C/svg%3E");
+        }
+
+        .material-copy {
+            min-width: 0;
+        }
+
+        .material-name {
+            font-weight: 600;
+            color: #2d3b55;
+            margin-bottom: 4px;
+        }
+
+        .material-trigger {
+            border: 0;
+            padding: 0;
+            background: transparent;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .material-trigger:hover .material-name {
+            color: #2563eb;
+        }
+
+        .material-id {
+            color: #8a94a8;
+            font-size: 12px;
+        }
+
+        .tag-cell {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .material-tag-badge {
+            display: inline-flex;
+            align-items: center;
+            height: 24px;
+            padding: 0 10px;
+            border-radius: 999px;
+            background: #eef4ff;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .table-check {
+            width: 16px;
+            height: 16px;
+            accent-color: #2f6fda;
+            cursor: pointer;
+        }
+
+        .trace-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .trace-summary {
+            color: #475569;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .trace-action {
+            align-self: flex-start;
+            border: 0;
+            background: transparent;
+            color: #2563eb;
+            padding: 0;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 30px;
+            border-radius: 9px;
+            padding: 0 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pill-positive {
+            color: #16956f;
+            background: var(--green-soft);
+        }
+
+        .pill-negative {
+            color: #dc6d2d;
+            background: var(--danger-soft);
+        }
+
+        .metric-link {
+            color: #2563eb;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .muted {
+            color: #94a3b8;
+        }
+
+        .align-right {
+            text-align: right;
+        }
+
+        .summary-value {
+            color: #1f2937;
+        }
+
+        .summary-blue {
+            color: #2563eb;
+        }
+
+        .metric-stack {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .metric-icon {
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.85;
+        }
+
+        .metric-stack .muted {
+            color: #94a3b8;
+        }
+
+        .spend-cell {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .trend-popover {
+            position: absolute;
+            left: -70px;
+            top: 34px;
+            width: 278px;
+            padding: 14px 14px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(218, 225, 237, 0.9);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 16px 36px rgba(25, 42, 70, 0.15);
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            z-index: 60;
+        }
+
+        .spend-cell:hover .trend-popover,
+        .spend-cell:focus-within .trend-popover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .trend-arrow {
+            position: absolute;
+            top: -7px;
+            left: 138px;
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border-left: 1px solid rgba(218, 225, 237, 0.9);
+            border-top: 1px solid rgba(218, 225, 237, 0.9);
+            transform: rotate(45deg);
+        }
+
+        .trend-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .trend-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #2d3b55;
+        }
+
+        .trend-tabs {
+            display: inline-flex;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .trend-tab {
+            border: 0;
+            background: transparent;
+            padding: 0;
+            color: #6b7280;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .trend-tab.active {
+            color: #2563eb;
+        }
+
+        .trend-chart {
+            width: 100%;
+            height: 142px;
+            display: block;
+        }
+
+        .trend-legend {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .trend-line {
+            width: 22px;
+            height: 2px;
+            border-radius: 999px;
+            background: #2563eb;
+        }
+
+        .drawer-mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.24);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 90;
+        }
+
+        .drawer-mask.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 320px;
+            height: 100vh;
+            padding: 22px 20px;
+            background: #fff;
+            border-left: 1px solid var(--border);
+            box-shadow: -12px 0 32px rgba(15, 23, 42, 0.12);
+            transform: translateX(100%);
+            transition: transform 0.24s ease;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drawer.active {
+            transform: translateX(0);
+        }
+
+        .column-modal {
+            left: 50%;
+            top: 50%;
+            right: auto;
+            width: min(1180px, calc(100vw - 32px));
+            height: min(760px, calc(100vh - 32px));
+            max-height: calc(100vh - 32px);
+            padding: 0;
+            border-radius: 16px;
+            transform: translate(-50%, -48%) scale(0.98);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 105;
+            overflow: hidden;
+        }
+
+        .column-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .column-modal-head {
+            padding: 18px 20px;
+            margin: 0;
+            border-bottom: 1px solid #e7edf7;
+        }
+
+        .column-modal-body {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: 174px minmax(0, 1fr) 304px;
+        }
+
+        .column-sidebar,
+        .column-center,
+        .column-selected {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .column-sidebar {
+            border-right: 1px solid #e7edf7;
+        }
+
+        .column-center {
+            border-right: 1px solid #e7edf7;
+        }
+
+        .column-sidebar-title,
+        .column-panel-head {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e7edf7;
+            background: #fff;
+        }
+
+        .column-sidebar-title,
+        .column-panel-title {
+            color: #334155;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .column-sidebar-list,
+        .column-panel-body {
+            min-height: 0;
+            overflow: auto;
+        }
+
+        .column-category-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 11px 16px;
+            border: 0;
+            background: #fff;
+            color: #4b5563;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .column-category-item.active {
+            background: #edf4ff;
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .column-category-item:hover {
+            background: #f8fbff;
+        }
+
+        .column-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .column-panel-actions {
+            display: flex;
+            gap: 14px;
+        }
+
+        .column-link-button {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: #2563eb;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .column-section {
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .column-section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #fafcff;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .column-section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .column-section-subtitle {
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #eef4ff;
+            color: #5b8def;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .column-section-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px 14px;
+            padding: 14px 16px 18px;
+        }
+
+        .column-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 28px;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .column-option input {
+            width: 14px;
+            height: 14px;
+            accent-color: #2f6fda;
+        }
+
+        .column-option.disabled {
+            color: #b4c0d3;
+        }
+
+        .column-selected {
+            background: #fbfcff;
+        }
+
+        .column-selected-group {
+            padding: 0 12px 14px;
+        }
+
+        .column-selected-title {
+            position: sticky;
+            top: 0;
+            padding: 10px 4px 10px;
+            background: #fbfcff;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .selected-chip-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .selected-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border: 1px solid #dfe7f2;
+            border-radius: 10px;
+            background: #fff;
+            color: #334155;
+            font-size: 13px;
+        }
+
+        .selected-chip-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .selected-chip-icon {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .selected-chip-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .selected-chip-fixed {
+            color: #5b8def;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .column-empty {
+            padding: 18px 8px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .column-modal-footer {
+            margin-top: 0;
+            padding: 14px 20px;
+            border-top: 1px solid #e7edf7;
+            background: #fff;
+        }
+
+        .detail-drawer {
+            width: 760px;
+            max-width: calc(100vw - 32px);
+            z-index: 110;
+        }
+
+        .drawer-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .drawer-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .drawer-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .drawer-description {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .drawer-list {
+            display: grid;
+            gap: 12px;
+            overflow: auto;
+            padding-right: 4px;
+        }
+
+        .drawer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .drawer-row label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        .drawer-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 16px;
+        }
+
+        .detail-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .detail-meta-card {
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid #e7edf7;
+            background: #fafcff;
+        }
+
+        .detail-meta-label {
+            color: #8090a8;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .detail-meta-value {
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .detail-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .detail-tag {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #f4f7fb;
+            color: #536278;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .level-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .level-tab {
+            height: 34px;
+            padding: 0 12px;
+            border-radius: 10px;
+            border: 1px solid #d8dfeb;
+            background: #fff;
+            color: #4b5563;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .level-tab.active {
+            border-color: transparent;
+            background: linear-gradient(180deg, #4d8fff, #2f6fda);
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.18);
+        }
+
+        .detail-section-title {
+            margin-bottom: 10px;
+        }
+
+        .detail-section-title strong {
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .detail-table-wrap {
+            border: 1px solid #e7edf7;
+            border-radius: 14px;
+            overflow: auto;
+            background: #fff;
+        }
+
+        .detail-table {
+            width: 100%;
+            min-width: 880px;
+            border-collapse: collapse;
+        }
+
+        .detail-table th,
+        .detail-table td {
+            padding: 10px 12px;
+            font-size: 12px;
+            border-bottom: 1px solid #edf1f7;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .detail-table th {
+            color: #64748b;
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .detail-table td {
+            color: #334155;
+        }
+
+        .detail-table tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .detail-table .summary-row td {
+            background: #f7faff;
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        .drawer-button {
+            height: 36px;
+            border-radius: 10px;
+            padding: 0 15px;
+            border: 1px solid var(--border-strong);
+            background: #fff;
+            color: #4b5563;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: transform 0.18s ease, border-color 0.18s ease;
+        }
+
+        .drawer-button.primary {
+            background: linear-gradient(180deg, #4d8fff, #2f6fda);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        .empty-state {
+            padding: 72px 24px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1600px) {
+            .filter-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="brand">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 5.5A2.5 2.5 0 0 1 7.5 3h5A2.5 2.5 0 0 1 15 5.5V8h1.5A2.5 2.5 0 0 1 19 10.5v8A2.5 2.5 0 0 1 16.5 21h-6A2.5 2.5 0 0 1 8 18.5V16H6.5A2.5 2.5 0 0 1 4 13.5v-6A2.5 2.5 0 0 1 6.5 5H8" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 8h7v8H8z" fill="rgba(255,255,255,0.92)"/>
+                        </svg>
+                    </div>
+                    <div class="brand-title">素材看板日报</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <svg class="top-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                    <path d="M12 17.2v-.2M12 7.5v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <svg class="top-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M15 18.5H9a7 7 0 0 0 6-6.9V10a3 3 0 1 0-6 0v1.6A7 7 0 0 0 15 18.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M9.5 18.5a2.5 2.5 0 0 0 5 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                <div class="profile">
+                    <div class="avatar">AD</div>
+                    <span>优化师-小明</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <section class="panel filter-panel">
+            <div class="filter-grid">
+                <div class="field">
+                    <label class="field-label">日期</label>
+                    <div class="range-field">
+                        <input id="filter-date-start" class="field-control" type="date" value="2025-05-28">
+                        <span class="range-separator">至</span>
+                        <input id="filter-date-end" class="field-control" type="date" value="2025-05-28">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-new-scope">素材投放时间</label>
+                    <select id="filter-new-scope" class="field-control">
+                        <option value="当日新增">当日新增</option>
+                        <option value="昨日新增">昨日新增</option>
+                        <option value="本周新增">本周新增</option>
+                        <option value="全部">全部</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-product">产品</label>
+                    <select id="filter-product" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="AppA">AppA</option>
+                        <option value="AppB">AppB</option>
+                        <option value="AppC">AppC</option>
+                        <option value="AppD">AppD</option>
+                        <option value="AppE">AppE</option>
+                        <option value="AppF">AppF</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-channel">渠道</label>
+                    <select id="filter-channel" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="巨量引擎">巨量引擎</option>
+                        <option value="腾讯广告">腾讯广告</option>
+                        <option value="快手">快手</option>
+                        <option value="百度营销">百度营销</option>
+                        <option value="360点睛">360点睛</option>
+                        <option value="小米营销">小米营销</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-device">终端</label>
+                    <select id="filter-device" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="Android">Android</option>
+                        <option value="iOS">iOS</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-launch-mode">投放模式</label>
+                    <select id="filter-launch-mode" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="自动投放">自动投放</option>
+                        <option value="成本上限">成本上限</option>
+                        <option value="ROAS目标">ROAS目标</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-delivery-region">投放地区</label>
+                    <select id="filter-delivery-region" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="华东">华东</option>
+                        <option value="华南">华南</option>
+                        <option value="华北">华北</option>
+                        <option value="华中">华中</option>
+                        <option value="西南">西南</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-optimizer">优化师</label>
+                    <select id="filter-optimizer" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="优化师-小明">优化师-小明</option>
+                        <option value="优化师-小红">优化师-小红</option>
+                        <option value="优化师-小周">优化师-小周</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="search-account">广告账户</label>
+                    <input id="search-account" class="field-control" type="text" placeholder="请输入广告账户名称">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="search-account-id">广告账户ID</label>
+                    <input id="search-account-id" class="field-control" type="text" placeholder="请输入广告账户ID">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="search-material">素材名称</label>
+                    <input id="search-material" class="field-control" type="text" placeholder="请输入素材名称">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-material-tag">素材标签</label>
+                    <select id="filter-material-tag" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="新客拉新">新客拉新</option>
+                        <option value="高潜测试">高潜测试</option>
+                        <option value="节日活动">节日活动</option>
+                        <option value="素材复用">素材复用</option>
+                        <option value="品牌种草">品牌种草</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="search-campaign">广告系列名称</label>
+                    <input id="search-campaign" class="field-control" type="text" placeholder="请输入广告系列名称">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="search-adset">广告组名称</label>
+                    <input id="search-adset" class="field-control" type="text" placeholder="请输入广告组名称">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="search-ad">广告名称</label>
+                    <input id="search-ad" class="field-control" type="text" placeholder="请输入广告名称">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-type">素材类型</label>
+                    <select id="filter-type" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="视频">视频</option>
+                        <option value="图片">图片</option>
+                        <option value="关键词">关键词</option>
+                        <option value="试玩">试玩</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-creator">创意人</label>
+                    <select id="filter-creator" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="创意人-阿哲">创意人-阿哲</option>
+                        <option value="创意人-小羽">创意人-小羽</option>
+                        <option value="创意人-柚子">创意人-柚子</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-designer">素材师</label>
+                    <select id="filter-designer" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="素材师-安安">素材师-安安</option>
+                        <option value="素材师-子墨">素材师-子墨</option>
+                        <option value="素材师-晨晨">素材师-晨晨</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-experiment">是否实验</label>
+                    <select id="filter-experiment" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="是">是</option>
+                        <option value="否">否</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-spend-region">消耗所在地区</label>
+                    <select id="filter-spend-region" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="华东">华东</option>
+                        <option value="华南">华南</option>
+                        <option value="华北">华北</option>
+                        <option value="华中">华中</option>
+                        <option value="西南">西南</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label">首次交付时间</label>
+                    <div class="range-field">
+                        <input id="filter-delivery-start" class="field-control" type="date">
+                        <span class="range-separator">至</span>
+                        <input id="filter-delivery-end" class="field-control" type="date">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">首次消耗时间</label>
+                    <div class="range-field">
+                        <input id="filter-first-spend-start" class="field-control" type="date">
+                        <span class="range-separator">至</span>
+                        <input id="filter-first-spend-end" class="field-control" type="date">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">首次投放时间</label>
+                    <div class="range-field">
+                        <input id="filter-first-launch-start" class="field-control" type="date">
+                        <span class="range-separator">至</span>
+                        <input id="filter-first-launch-end" class="field-control" type="date">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label" for="search-placement-group">投放组</label>
+                    <input id="search-placement-group" class="field-control" type="text" placeholder="请输入投放组">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="filter-kol">KOL投放</label>
+                    <select id="filter-kol" class="field-control">
+                        <option value="全部">全部</option>
+                        <option value="是">是</option>
+                        <option value="否">否</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="field-label">按指标</label>
+                    <div class="metric-filter">
+                        <select id="filter-metric" class="field-control">
+                            <option value="全部">全部</option>
+                            <option value="spend">消耗</option>
+                            <option value="impressions">曝光</option>
+                            <option value="clicks">点击</option>
+                            <option value="install">install</option>
+                            <option value="ctr">CTR</option>
+                            <option value="cpc">CPC</option>
+                            <option value="cpi">CPI</option>
+                        </select>
+                        <input id="filter-metric-value" class="field-control" type="number" step="0.01" placeholder=">= 数值">
+                    </div>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <div class="filter-summary">
+                    <button class="filter-toggle-button" id="toggle-filter-fields" type="button">展开筛选项</button>
+                    <span class="filter-summary-label">已选条件</span>
+                    <div class="filter-summary-list" id="selected-filter-summary"></div>
+                </div>
+                <div class="filter-actions-buttons">
+                    <button class="action-button action-secondary" id="reset-filters" type="button">重置</button>
+                    <button class="action-button action-primary" id="apply-filters" type="button">查询</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel table-panel">
+            <div class="bulk-toolbar" id="bulk-toolbar">
+                <div class="bulk-summary">已选择 <strong id="bulk-count">0</strong> 条素材，可按上层层级聚合查看整体数据</div>
+                <div class="bulk-actions">
+                    <button class="bulk-button" type="button" data-bulk-level="ads">按广告聚合</button>
+                    <button class="bulk-button" type="button" data-bulk-level="adsets">按广告组聚合</button>
+                    <button class="bulk-button" type="button" data-bulk-level="campaigns">按广告系列聚合</button>
+                    <button class="bulk-button" type="button" data-bulk-level="accounts">按广告账户聚合</button>
+                    <button class="bulk-button primary" type="button" id="clear-selection">清空选择</button>
+                </div>
+            </div>
+            <div class="table-tools">
+                <div class="table-head-main">
+                    <div class="aggregate-toolbar">
+                        <label class="aggregate-toggle" for="toggle-aggregate-date">
+                            <input id="toggle-aggregate-date" type="checkbox" checked>
+                            <span>聚合日期</span>
+                        </label>
+                        <div class="aggregate-mode-group">
+                            <button class="aggregate-mode-button active" type="button" data-aggregate-mode="range">按日期区间</button>
+                            <button class="aggregate-mode-button" type="button" data-aggregate-mode="naturalWeek">按自然周聚合</button>
+                            <button class="aggregate-mode-button" type="button" data-aggregate-mode="businessWeek">按业务周聚合</button>
+                            <button class="aggregate-mode-button" type="button" data-aggregate-mode="month">按月聚合</button>
+                        </div>
+                        <div class="caliber-mode-group">
+                            <button class="aggregate-mode-button active" type="button" data-caliber-mode="internal">使用内部激活口径</button>
+                            <button class="aggregate-mode-button" type="button" data-caliber-mode="af">使用AF_INSTALL口径</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-head-actions">
+                    <button class="toolbar-button" type="button" id="open-column-drawer">自定义列</button>
+                    <button class="toolbar-button primary" type="button" id="save-view-button">另存为视图</button>
+                </div>
+            </div>
+            <div class="table-scroller">
+                <table>
+                    <thead>
+                        <tr id="table-head-row"></tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <div class="drawer-mask" id="drawer-mask"></div>
+    <aside class="drawer column-modal" id="column-drawer" aria-hidden="true">
+        <div class="drawer-head column-modal-head">
+            <div class="drawer-title">自定义列</div>
+            <button class="drawer-close" id="close-drawer" type="button" aria-label="关闭">×</button>
+        </div>
+        <div class="column-modal-body">
+            <aside class="column-sidebar">
+                <div class="column-sidebar-title">数据类型</div>
+                <div class="column-sidebar-list" id="column-category-list"></div>
+            </aside>
+            <section class="column-center">
+                <div class="column-panel-head">
+                    <div class="column-panel-title">数据指标</div>
+                </div>
+                <div class="column-panel-body" id="column-metrics-sections"></div>
+            </section>
+            <aside class="column-selected">
+                <div class="column-panel-head">
+                    <div class="column-panel-title">已选择<span id="column-selected-count">0</span>列</div>
+                    <div class="column-panel-actions">
+                        <button class="column-link-button" id="clear-columns" type="button">清空</button>
+                        <button class="column-link-button" id="reset-columns" type="button">恢复默认</button>
+                    </div>
+                </div>
+                <div class="column-panel-body">
+                    <div class="column-selected-group">
+                        <div class="column-selected-title">数据维度</div>
+                        <div id="selected-dimension-list"></div>
+                    </div>
+                    <div class="column-selected-group">
+                        <div class="column-selected-title">数据指标</div>
+                        <div id="selected-metric-list"></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+        <div class="drawer-footer column-modal-footer">
+            <button class="drawer-button" id="cancel-columns" type="button">取消</button>
+            <button class="drawer-button primary" id="save-columns" type="button">确定</button>
+        </div>
+    </aside>
+
+    <div class="drawer-mask" id="detail-mask"></div>
+    <aside class="drawer detail-drawer" id="detail-drawer" aria-hidden="true">
+        <div class="drawer-head">
+            <div class="drawer-title" id="detail-title">素材详情</div>
+            <button class="drawer-close" id="close-detail-drawer" type="button" aria-label="关闭">×</button>
+        </div>
+        <div class="drawer-description" id="detail-description">查看素材整体数据，并向上追溯到广告、广告组、广告系列和广告账户。</div>
+        <div class="detail-tags" id="detail-tags"></div>
+        <div class="level-tabs" id="detail-level-tabs"></div>
+        <div class="detail-section-title">
+            <strong id="detail-section-name">关联广告</strong>
+        </div>
+        <div class="detail-table-wrap">
+            <table class="detail-table">
+                <thead id="detail-table-head"></thead>
+                <tbody id="detail-table-body"></tbody>
+            </table>
+        </div>
+    </aside>
+
+    <script>
+        const columns = [
+            { key: "select", label: "", defaultVisible: true, configurable: false, type: "fixed" },
+            { key: "statDate", label: "日期", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "material", label: "素材名称", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "materialTag", label: "素材标签", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "traceSummary", label: "关联层级", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "product", label: "产品", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "channel", label: "渠道", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "launchMode", label: "投放模式", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "deliveryRegion", label: "投放地区", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "device", label: "终端", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "campaign", label: "广告系列", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "adset", label: "广告组", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "ad", label: "广告", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "account", label: "广告账户", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "accountId", label: "广告账户ID", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "optimizer", label: "优化师", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "type", label: "素材类型", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "creator", label: "创意人", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "designer", label: "素材师", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "isExperiment", label: "是否实验", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "spendRegion", label: "消耗所在地区", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "firstDelivery", label: "首次交付时间", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "firstSpend", label: "首次消耗时间", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "firstLaunch", label: "首次投放时间", defaultVisible: true, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "placementGroup", label: "投放组", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "kolLaunch", label: "KOL投放", defaultVisible: false, configurable: true, category: "dimensions", selectedGroup: "dimension" },
+            { key: "spend", label: "消耗", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "currency" },
+            { key: "install", label: "install", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "afinstall", label: "afinstall", defaultVisible: false, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "cpi", label: "cpi", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "afcpi", label: "afcpi", defaultVisible: false, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "cpa", label: "cpa", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "activation", label: "激活", defaultVisible: false, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "impressions", label: "曝光", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "cpm", label: "cpm", defaultVisible: false, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "clicks", label: "点击", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "cpc", label: "cpc", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "ctr", label: "ctr", defaultVisible: true, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "ipm", label: "ipm", defaultVisible: false, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "installCvr", label: "安装cvr", defaultVisible: false, configurable: true, category: "basic", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d0Roi", label: "首日ROI", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d0Revenue", label: "D0收入", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "currency" },
+            { key: "d0TrialUv", label: "D0试用UV", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "d0TrialCost", label: "D0试用成本", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "d0PaidUv", label: "D0付费UV", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "d0PaidCost", label: "D0付费成本", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "d0TotalUv", label: "D0总转化UV", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "d0TotalCost", label: "D0总转化成本", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "d0TrialCancelRate", label: "D0免费试用取消率", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d0TrialRate", label: "D0免费试用率", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d0DirectBuyRate", label: "D0直接购买率", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d0TotalConversionRate", label: "D0总转化率", defaultVisible: false, configurable: true, category: "d0", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d3ChargeSuccessRate", label: "D3扣款成功率", defaultVisible: false, configurable: true, category: "effect", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d3TrialCancelRate", label: "D3免费试用取消率", defaultVisible: false, configurable: true, category: "effect", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d3PaidCost", label: "D3付费成本", defaultVisible: false, configurable: true, category: "effect", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "d7ChargeSuccessRate", label: "D7扣款成功率", defaultVisible: false, configurable: true, category: "effect", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d7TrialCancelRate", label: "D7免费试用取消率", defaultVisible: false, configurable: true, category: "effect", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "d7PaidCost", label: "D7付费成本", defaultVisible: false, configurable: true, category: "effect", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "retentionUv", label: "次留UV", defaultVisible: false, configurable: true, category: "retention", selectedGroup: "metric", align: "right", format: "integer" },
+            { key: "retentionCost", label: "次留成本", defaultVisible: false, configurable: true, category: "retention", selectedGroup: "metric", align: "right", format: "decimal" },
+            { key: "retentionRate", label: "次留率", defaultVisible: false, configurable: true, category: "retention", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "view3s", label: "3s完播率", defaultVisible: false, configurable: true, category: "completion", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "view10s", label: "10s完播率", defaultVisible: false, configurable: true, category: "completion", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "view25", label: "视频25%观看率", defaultVisible: false, configurable: true, category: "completion", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "view50", label: "视频50%观看率", defaultVisible: false, configurable: true, category: "completion", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "view75", label: "视频75%观看率", defaultVisible: false, configurable: true, category: "completion", selectedGroup: "metric", align: "right", format: "percent" },
+            { key: "view100", label: "视频100%观看率", defaultVisible: false, configurable: true, category: "completion", selectedGroup: "metric", align: "right", format: "percent" }
+        ];
+
+        const columnCategoryMeta = [
+            { id: "all", label: "全部" },
+            { id: "dimensions", label: "维度" },
+            { id: "basic", label: "基础数据" },
+            { id: "d0", label: "D0数据" },
+            { id: "effect", label: "效果数据" },
+            { id: "retention", label: "留存数据" },
+            { id: "completion", label: "完播率" }
+        ];
+
+        const columnCategoryLabels = {
+            dimensions: "维度",
+            basic: "基础数据",
+            d0: "D0数据",
+            effect: "效果数据",
+            retention: "留存数据",
+            completion: "完播率"
+        };
+
+        const fixedColumnKeys = columns.filter((column) => column.type === "fixed").map((column) => column.key);
+        const defaultConfigurableColumnKeys = columns.filter((column) => column.defaultVisible && column.configurable).map((column) => column.key);
+        const defaultColumnKeys = [...fixedColumnKeys, ...defaultConfigurableColumnKeys];
+        let visibleColumnKeys = [...defaultColumnKeys];
+        let draftColumnKeys = [...defaultConfigurableColumnKeys];
+        let activeColumnCategory = "all";
+        let selectedMaterialIds = [];
+        let currentFilteredRows = [];
+        let currentRowsByKey = new Map();
+        let filterExpanded = false;
+        let aggregateMode = "range";
+        let metricCaliberMode = "internal";
+        let detailState = {
+            mode: "single",
+            level: "ads",
+            sourceRows: []
+        };
+        const dashboardReferenceDate = "2025-05-29";
+        const defaultDashboardDate = "2025-05-28";
+        const defaultNewScope = "昨日新增";
+        const dashboardWeekStartDate = "2025-05-26";
+
+        const levelMeta = {
+            ads: { label: "广告", key: "ad" },
+            adsets: { label: "广告组", key: "adset" },
+            campaigns: { label: "广告系列", key: "campaign" },
+            accounts: { label: "广告账户", key: "account" }
+        };
+
+        const detailColumnMeta = {
+            ads: [
+                { key: "name", label: "广告" },
+                { key: "adset", label: "广告组" },
+                { key: "campaign", label: "广告系列" },
+                { key: "spend", label: "消耗", format: "currency" },
+                { key: "impressions", label: "展示", format: "integer" },
+                { key: "clicks", label: "点击", format: "integer" },
+                { key: "ctr", label: "CTR", format: "percent" },
+                { key: "cpc", label: "CPC", format: "decimal" }
+            ],
+            adsets: [
+                { key: "name", label: "广告组" },
+                { key: "campaign", label: "广告系列" },
+                { key: "spend", label: "消耗", format: "currency" },
+                { key: "impressions", label: "展示", format: "integer" },
+                { key: "clicks", label: "点击", format: "integer" },
+                { key: "ctr", label: "CTR", format: "percent" },
+                { key: "cpc", label: "CPC", format: "decimal" }
+            ],
+            campaigns: [
+                { key: "name", label: "广告系列" },
+                { key: "account", label: "广告账户" },
+                { key: "spend", label: "消耗", format: "currency" },
+                { key: "impressions", label: "展示", format: "integer" },
+                { key: "clicks", label: "点击", format: "integer" },
+                { key: "ctr", label: "CTR", format: "percent" },
+                { key: "cpc", label: "CPC", format: "decimal" }
+            ],
+            accounts: [
+                { key: "name", label: "广告账户" },
+                { key: "spend", label: "消耗", format: "currency" },
+                { key: "impressions", label: "展示", format: "integer" },
+                { key: "clicks", label: "点击", format: "integer" },
+                { key: "ctr", label: "CTR", format: "percent" },
+                { key: "cpc", label: "CPC", format: "decimal" }
+            ]
+        };
+
+        const trendSeries = {
+            spend: {
+                7: [480, 560, 720, 820, 860, 560, 500, 610, 735],
+                14: [390, 460, 540, 620, 740, 790, 845, 760, 650, 580, 540, 610, 675, 720],
+                30: [280, 340, 330, 410, 520, 610, 690, 710, 760, 800, 780, 720, 680, 620, 590, 540, 500, 530, 570, 620, 680, 740, 770, 790, 760, 710, 660, 620, 670, 720]
+            }
+        };
+
+        const rows = [
+            {
+                material: { name: "山海奇遇_视频_01", id: "1687329456789012", thumb: "thumb-video-1" },
+                isNew: "是",
+                type: "视频",
+                createdAt: "2025-05-28\n10:21:15",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "2025-05-28",
+                firstLaunchDate: "2025-05-28",
+                firstLaunch: "2025-05-28\n11:05:32",
+                app: "AppA",
+                channel: "巨量引擎",
+                region: "华东",
+                device: "Android",
+                account: "账户A001",
+                campaign: "春季大促_25期",
+                adset: "兴趣人群_01",
+                ad: "广告_01",
+                mountedAds: 6,
+                hasSpend: "是",
+                spend: 1258.68,
+                impressions: 85632,
+                clicks: 1268,
+                ctr: 1.48,
+                cpc: 0.99,
+                traceData: {
+                    ads: [
+                        { name: "广告_01", spend: 562.31, impressions: 38210, clicks: 545 },
+                        { name: "广告_05", spend: 384.12, impressions: 26224, clicks: 392 },
+                        { name: "广告_09", spend: 312.25, impressions: 21198, clicks: 331 }
+                    ],
+                    adsets: [
+                        { name: "兴趣人群_01", spend: 874.56, impressions: 59382, clicks: 864 },
+                        { name: "相似人群_02", spend: 384.12, impressions: 26250, clicks: 404 }
+                    ],
+                    campaigns: [
+                        { name: "春季大促_25期", spend: 1258.68, impressions: 85632, clicks: 1268 }
+                    ],
+                    accounts: [
+                        { name: "账户A001", spend: 1258.68, impressions: 85632, clicks: 1268 }
+                    ]
+                }
+            },
+            {
+                material: { name: "少女战纪_图_02", id: "1687329456789013", thumb: "thumb-img-1" },
+                isNew: "是",
+                type: "图片",
+                createdAt: "2025-05-28\n10:18:44",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "2025-05-28",
+                firstLaunchDate: "2025-05-28",
+                firstLaunch: "2025-05-28\n11:20:11",
+                app: "AppA",
+                channel: "腾讯广告",
+                region: "华南",
+                device: "iOS",
+                account: "账户A002",
+                campaign: "少女战纪_首发",
+                adset: "付费人群_02",
+                ad: "广告_03",
+                mountedAds: 4,
+                hasSpend: "是",
+                spend: 882.35,
+                impressions: 62314,
+                clicks: 912,
+                ctr: 1.46,
+                cpc: 0.97,
+                traceData: {
+                    ads: [
+                        { name: "广告_03", spend: 521.32, impressions: 36121, clicks: 548 },
+                        { name: "广告_08", spend: 361.03, impressions: 26193, clicks: 364 }
+                    ],
+                    adsets: [
+                        { name: "付费人群_02", spend: 882.35, impressions: 62314, clicks: 912 }
+                    ],
+                    campaigns: [
+                        { name: "少女战纪_首发", spend: 882.35, impressions: 62314, clicks: 912 }
+                    ],
+                    accounts: [
+                        { name: "账户A002", spend: 882.35, impressions: 62314, clicks: 912 }
+                    ]
+                }
+            },
+            {
+                material: { name: "清爽一夏_图_03", id: "1687329456789014", thumb: "thumb-product-1" },
+                isNew: "是",
+                type: "图片",
+                createdAt: "2025-05-28\n10:15:33",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "2025-05-28",
+                firstLaunchDate: "2025-05-28",
+                firstLaunch: "2025-05-28\n10:45:22",
+                app: "AppB",
+                channel: "巨量引擎",
+                region: "华北",
+                device: "Android",
+                account: "账户B001",
+                campaign: "清爽一夏_活动",
+                adset: "潜力人群_01",
+                ad: "广告_02",
+                mountedAds: 3,
+                hasSpend: "是",
+                spend: 765.40,
+                impressions: 50121,
+                clicks: 689,
+                ctr: 1.37,
+                cpc: 1.11,
+                traceData: {
+                    ads: [
+                        { name: "广告_02", spend: 425.15, impressions: 27851, clicks: 377 },
+                        { name: "广告_06", spend: 340.25, impressions: 22270, clicks: 312 }
+                    ],
+                    adsets: [
+                        { name: "潜力人群_01", spend: 765.40, impressions: 50121, clicks: 689 }
+                    ],
+                    campaigns: [
+                        { name: "清爽一夏_活动", spend: 765.40, impressions: 50121, clicks: 689 }
+                    ],
+                    accounts: [
+                        { name: "账户B001", spend: 765.40, impressions: 50121, clicks: 689 }
+                    ]
+                }
+            },
+            {
+                material: { name: "极速竞速_视频_04", id: "1687329456789015", thumb: "thumb-video-2" },
+                isNew: "否",
+                type: "视频",
+                createdAt: "2025-05-27\n10:13:08",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "2025-05-28",
+                firstLaunchDate: "2025-05-28",
+                firstLaunch: "2025-05-28\n11:10:08",
+                app: "AppC",
+                channel: "快手",
+                region: "华中",
+                device: "Android",
+                account: "账户C003",
+                campaign: "赛道挑战赛",
+                adset: "核心人群_01",
+                ad: "广告_01",
+                mountedAds: 5,
+                hasSpend: "是",
+                spend: 981.64,
+                impressions: 73140,
+                clicks: 1045,
+                ctr: 1.43,
+                cpc: 0.94,
+                traceData: {
+                    ads: [
+                        { name: "广告_01", spend: 466.22, impressions: 35202, clicks: 488 },
+                        { name: "广告_07", spend: 515.42, impressions: 37938, clicks: 557 }
+                    ],
+                    adsets: [
+                        { name: "核心人群_01", spend: 981.64, impressions: 73140, clicks: 1045 }
+                    ],
+                    campaigns: [
+                        { name: "赛道挑战赛", spend: 981.64, impressions: 73140, clicks: 1045 }
+                    ],
+                    accounts: [
+                        { name: "账户C003", spend: 981.64, impressions: 73140, clicks: 1045 }
+                    ]
+                }
+            },
+            {
+                material: { name: "龙域传说_视频_05", id: "1687329456789016", thumb: "thumb-video-3" },
+                isNew: "否",
+                type: "视频",
+                createdAt: "2025-05-27\n10:10:55",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "2025-05-28",
+                firstLaunchDate: "2025-05-28",
+                firstLaunch: "2025-05-28\n10:50:19",
+                app: "AppA",
+                channel: "百度营销",
+                region: "西南",
+                device: "iOS",
+                account: "账户A001",
+                campaign: "龙域传说_新服",
+                adset: "游戏人群_01",
+                ad: "广告_04",
+                mountedAds: 4,
+                hasSpend: "是",
+                spend: 688.92,
+                impressions: 61202,
+                clicks: 1381,
+                ctr: 1.43,
+                cpc: 0.88,
+                traceData: {
+                    ads: [
+                        { name: "广告_04", spend: 688.92, impressions: 61202, clicks: 1381 }
+                    ],
+                    adsets: [
+                        { name: "游戏人群_01", spend: 688.92, impressions: 61202, clicks: 1381 }
+                    ],
+                    campaigns: [
+                        { name: "龙域传说_新服", spend: 688.92, impressions: 61202, clicks: 1381 }
+                    ],
+                    accounts: [
+                        { name: "账户A001", spend: 688.92, impressions: 61202, clicks: 1381 }
+                    ]
+                }
+            },
+            {
+                material: { name: "植物能量_图_06", id: "1687329456789017", thumb: "thumb-product-1" },
+                isNew: "否",
+                type: "图片",
+                createdAt: "2025-05-26\n10:08:21",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "",
+                firstLaunchDate: "",
+                firstLaunch: "--",
+                app: "AppD",
+                channel: "360点睛",
+                region: "华东",
+                device: "Android",
+                account: "账户D002",
+                campaign: "植物能量_日常",
+                adset: "泛人群_02",
+                ad: "广告_02",
+                mountedAds: 2,
+                hasSpend: "否",
+                spend: 0,
+                impressions: 9876,
+                clicks: 112,
+                ctr: 0.91,
+                cpc: 0,
+                traceData: {
+                    ads: [
+                        { name: "广告_02", spend: 0, impressions: 9876, clicks: 112 }
+                    ],
+                    adsets: [
+                        { name: "泛人群_02", spend: 0, impressions: 9876, clicks: 112 }
+                    ],
+                    campaigns: [
+                        { name: "植物能量_日常", spend: 0, impressions: 9876, clicks: 112 }
+                    ],
+                    accounts: [
+                        { name: "账户D002", spend: 0, impressions: 9876, clicks: 112 }
+                    ]
+                }
+            },
+            {
+                material: { name: "英语提分课_图_07", id: "1687329456789018", thumb: "thumb-img-2" },
+                isNew: "否",
+                type: "图片",
+                createdAt: "2025-05-23\n10:05:47",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "",
+                firstLaunchDate: "",
+                firstLaunch: "--",
+                app: "AppE",
+                channel: "腾讯广告",
+                region: "华北",
+                device: "iOS",
+                account: "账户E001",
+                campaign: "暑期特训营",
+                adset: "学生人群_03",
+                ad: "广告_03",
+                mountedAds: 1,
+                hasSpend: "否",
+                spend: 0,
+                impressions: 8765,
+                clicks: 61,
+                ctr: 0.70,
+                cpc: 0,
+                traceData: {
+                    ads: [
+                        { name: "广告_03", spend: 0, impressions: 8765, clicks: 61 }
+                    ],
+                    adsets: [
+                        { name: "学生人群_03", spend: 0, impressions: 8765, clicks: 61 }
+                    ],
+                    campaigns: [
+                        { name: "暑期特训营", spend: 0, impressions: 8765, clicks: 61 }
+                    ],
+                    accounts: [
+                        { name: "账户E001", spend: 0, impressions: 8765, clicks: 61 }
+                    ]
+                }
+            },
+            {
+                material: { name: "轻奢女装_图_08", id: "1687329456789019", thumb: "thumb-img-3" },
+                isNew: "否",
+                type: "图片",
+                createdAt: "2025-05-21\n10:02:12",
+                firstDeliveryDate: "2025-05-28",
+                firstSpendDate: "",
+                firstLaunchDate: "",
+                firstLaunch: "--",
+                app: "AppF",
+                channel: "小米营销",
+                region: "华南",
+                device: "Android",
+                account: "账户F003",
+                campaign: "初夏焕新",
+                adset: "购物人群_02",
+                ad: "广告_01",
+                mountedAds: 2,
+                hasSpend: "否",
+                spend: 0,
+                impressions: 9876,
+                clicks: 78,
+                ctr: 0.79,
+                cpc: 0,
+                traceData: {
+                    ads: [
+                        { name: "广告_01", spend: 0, impressions: 9876, clicks: 78 }
+                    ],
+                    adsets: [
+                        { name: "购物人群_02", spend: 0, impressions: 9876, clicks: 78 }
+                    ],
+                    campaigns: [
+                        { name: "初夏焕新", spend: 0, impressions: 9876, clicks: 78 }
+                    ],
+                    accounts: [
+                        { name: "账户F003", spend: 0, impressions: 9876, clicks: 78 }
+                    ]
+                }
+            }
+        ];
+
+        const rowProfiles = {
+            "1687329456789012": { launchMode: "自动投放", deliveryRegion: "华东", optimizer: "优化师-小明", creator: "创意人-阿哲", designer: "素材师-安安", isExperiment: "否", placementGroup: "投放组A", kolLaunch: "否", accountId: "ACC-A001", materialTag: ["新客拉新", "高潜测试"] },
+            "1687329456789013": { launchMode: "成本上限", deliveryRegion: "华南", optimizer: "优化师-小红", creator: "创意人-小羽", designer: "素材师-子墨", isExperiment: "是", placementGroup: "投放组B", kolLaunch: "否", accountId: "ACC-A002", materialTag: ["节日活动"] },
+            "1687329456789014": { launchMode: "自动投放", deliveryRegion: "华北", optimizer: "优化师-小周", creator: "创意人-柚子", designer: "素材师-晨晨", isExperiment: "否", placementGroup: "投放组A", kolLaunch: "是", accountId: "ACC-B001", materialTag: ["素材复用"] },
+            "1687329456789015": { launchMode: "ROAS目标", deliveryRegion: "华中", optimizer: "优化师-小明", creator: "创意人-阿哲", designer: "素材师-安安", isExperiment: "是", placementGroup: "投放组C", kolLaunch: "否", accountId: "ACC-C003", materialTag: ["品牌种草", "高潜测试"] },
+            "1687329456789016": { launchMode: "成本上限", deliveryRegion: "西南", optimizer: "优化师-小红", creator: "创意人-小羽", designer: "素材师-子墨", isExperiment: "否", placementGroup: "投放组D", kolLaunch: "是", accountId: "ACC-A001", materialTag: ["新客拉新"] },
+            "1687329456789017": { launchMode: "自动投放", deliveryRegion: "华东", optimizer: "优化师-小周", creator: "创意人-柚子", designer: "素材师-晨晨", isExperiment: "否", placementGroup: "投放组E", kolLaunch: "否", accountId: "ACC-D002", materialTag: ["素材复用", "节日活动"] },
+            "1687329456789018": { launchMode: "自动投放", deliveryRegion: "华北", optimizer: "优化师-小明", creator: "创意人-阿哲", designer: "素材师-子墨", isExperiment: "是", placementGroup: "投放组F", kolLaunch: "否", accountId: "ACC-E001", materialTag: ["高潜测试"] },
+            "1687329456789019": { launchMode: "ROAS目标", deliveryRegion: "华南", optimizer: "优化师-小红", creator: "创意人-小羽", designer: "素材师-安安", isExperiment: "否", placementGroup: "投放组G", kolLaunch: "是", accountId: "ACC-F003", materialTag: ["品牌种草"] }
+        };
+
+        rows.forEach((row) => {
+            Object.assign(row, rowProfiles[row.material.id] || {});
+        });
+
+        const filters = {
+            dateStart: document.getElementById("filter-date-start"),
+            dateEnd: document.getElementById("filter-date-end"),
+            newScope: document.getElementById("filter-new-scope"),
+            product: document.getElementById("filter-product"),
+            channel: document.getElementById("filter-channel"),
+            device: document.getElementById("filter-device"),
+            materialTag: document.getElementById("filter-material-tag"),
+            launchMode: document.getElementById("filter-launch-mode"),
+            deliveryRegion: document.getElementById("filter-delivery-region"),
+            optimizer: document.getElementById("filter-optimizer"),
+            type: document.getElementById("filter-type"),
+            creator: document.getElementById("filter-creator"),
+            designer: document.getElementById("filter-designer"),
+            isExperiment: document.getElementById("filter-experiment"),
+            spendRegion: document.getElementById("filter-spend-region"),
+            kolLaunch: document.getElementById("filter-kol"),
+            searchMaterial: document.getElementById("search-material"),
+            searchAccount: document.getElementById("search-account"),
+            searchAccountId: document.getElementById("search-account-id"),
+            searchCampaign: document.getElementById("search-campaign"),
+            searchAdset: document.getElementById("search-adset"),
+            searchAd: document.getElementById("search-ad"),
+            searchPlacementGroup: document.getElementById("search-placement-group"),
+            metric: document.getElementById("filter-metric"),
+            metricValue: document.getElementById("filter-metric-value"),
+            deliveryStart: document.getElementById("filter-delivery-start"),
+            deliveryEnd: document.getElementById("filter-delivery-end"),
+            firstSpendStart: document.getElementById("filter-first-spend-start"),
+            firstSpendEnd: document.getElementById("filter-first-spend-end"),
+            firstLaunchStart: document.getElementById("filter-first-launch-start"),
+            firstLaunchEnd: document.getElementById("filter-first-launch-end")
+        };
+
+        const tableHeadRow = document.getElementById("table-head-row");
+        const tableBody = document.getElementById("table-body");
+        const bulkToolbar = document.getElementById("bulk-toolbar");
+        const bulkCount = document.getElementById("bulk-count");
+        const filterFields = Array.from(document.querySelectorAll(".filter-grid .field"));
+        const toggleFilterFieldsButton = document.getElementById("toggle-filter-fields");
+        const detailDrawer = document.getElementById("detail-drawer");
+        const detailMask = document.getElementById("detail-mask");
+        const detailTitle = document.getElementById("detail-title");
+        const detailDescription = document.getElementById("detail-description");
+        const detailTags = document.getElementById("detail-tags");
+        const detailLevelTabs = document.getElementById("detail-level-tabs");
+        const detailSectionName = document.getElementById("detail-section-name");
+        const detailTableHead = document.getElementById("detail-table-head");
+        const detailTableBody = document.getElementById("detail-table-body");
+        const columnCategoryList = document.getElementById("column-category-list");
+        const columnMetricsSections = document.getElementById("column-metrics-sections");
+        const columnSelectedCount = document.getElementById("column-selected-count");
+        const selectedDimensionList = document.getElementById("selected-dimension-list");
+        const selectedMetricList = document.getElementById("selected-metric-list");
+        const aggregateDateToggle = document.getElementById("toggle-aggregate-date");
+        const aggregateModeButtons = Array.from(document.querySelectorAll("[data-aggregate-mode]"));
+        const caliberModeButtons = Array.from(document.querySelectorAll("[data-caliber-mode]"));
+        const selectedFilterSummary = document.getElementById("selected-filter-summary");
+        const columnsByKey = Object.fromEntries(columns.map((column) => [column.key, column]));
+
+        function formatInteger(value) {
+            return Number(value).toLocaleString("zh-CN");
+        }
+
+        function formatMoney(value) {
+            return "¥ " + Number(value).toLocaleString("zh-CN", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function formatPercent(value) {
+            return Number(value).toFixed(2) + "%";
+        }
+
+        function formatCellMultiline(value) {
+            if (String(value).includes("\n")) {
+                return String(value).split("\n").map((part) => `<div>${part}</div>`).join("");
+            }
+            return value;
+        }
+
+        function formatDateCell(value) {
+            return value || "--";
+        }
+
+        function getCollapsedFieldLimit() {
+            return window.innerWidth <= 1600 ? 12 : 15;
+        }
+
+        function renderFilterCollapse() {
+            const limit = getCollapsedFieldLimit();
+            const hasOverflow = filterFields.length > limit;
+
+            filterFields.forEach((field, index) => {
+                field.classList.toggle("is-collapsed-hidden", hasOverflow && !filterExpanded && index >= limit);
+            });
+
+            toggleFilterFieldsButton.style.display = hasOverflow ? "inline-flex" : "none";
+            toggleFilterFieldsButton.textContent = filterExpanded ? "收起筛选项" : "展开筛选项";
+        }
+
+        function getRowComputedMetrics(row) {
+            if (row._computedMetrics) {
+                return row._computedMetrics;
+            }
+            const seed = ((Number(row.material.id.slice(-3)) || 7) % 17) / 100;
+            const install = Math.max(0, Math.round(row.clicks * (0.16 + seed / 2)));
+            const afinstall = Math.max(0, Math.round(install * (0.82 - seed / 3)));
+            const activation = Math.max(0, Math.round(install * (0.71 - seed / 4)));
+            const d0Revenue = row.spend * (0.31 + seed);
+            const d0TrialUv = Math.max(0, Math.round(install * (0.45 + seed / 2)));
+            const d0PaidUv = Math.max(0, Math.round(install * (0.16 + seed / 3)));
+            const d0TotalUv = d0TrialUv + d0PaidUv;
+            const trialCancelRate = Math.min(35, 12 + seed * 80);
+            const d3ChargeSuccessRate = Math.min(88, 47 + seed * 160);
+            const d7ChargeSuccessRate = Math.min(92, 56 + seed * 140);
+            const retentionUv = Math.max(0, Math.round(install * (0.31 + seed / 4)));
+            const isVideo = row.type === "视频";
+            const view3s = isVideo ? Math.min(95, 68 + seed * 110) : null;
+            const view10s = isVideo ? Math.max(0, view3s - 12.5) : null;
+            const view25 = isVideo ? Math.max(0, view3s - 17) : null;
+            const view50 = isVideo ? Math.max(0, view3s - 29) : null;
+            const view75 = isVideo ? Math.max(0, view3s - 39) : null;
+            const view100 = isVideo ? Math.max(0, view3s - 48) : null;
+
+            row._computedMetrics = {
+                product: row.app,
+                accountId: row.accountId || row.account.replace("账户", "ACC-"),
+                launchMode: row.launchMode,
+                deliveryRegion: row.deliveryRegion,
+                optimizer: row.optimizer,
+                creator: row.creator,
+                designer: row.designer,
+                isExperiment: row.isExperiment,
+                placementGroup: row.placementGroup,
+                kolLaunch: row.kolLaunch,
+                spendRegion: row.region,
+                firstDelivery: row.firstDeliveryDate,
+                firstSpend: row.firstSpendDate || "",
+                install,
+                afinstall,
+                cpi: install ? row.spend / install : 0,
+                afcpi: afinstall ? row.spend / afinstall : 0,
+                cpa: activation ? row.spend / activation : 0,
+                activation,
+                cpm: row.impressions ? row.spend * 1000 / row.impressions : 0,
+                ipm: row.impressions ? install * 1000 / row.impressions : 0,
+                afIpm: row.impressions ? afinstall * 1000 / row.impressions : 0,
+                installCvr: row.clicks ? install / row.clicks * 100 : 0,
+                afInstallCvr: row.clicks ? afinstall / row.clicks * 100 : 0,
+                d0Revenue,
+                d0Roi: row.spend ? d0Revenue / row.spend * 100 : 0,
+                d0TrialUv,
+                d0TrialCost: d0TrialUv ? row.spend / d0TrialUv : 0,
+                d0PaidUv,
+                d0PaidCost: d0PaidUv ? row.spend / d0PaidUv : 0,
+                d0TotalUv,
+                d0TotalCost: d0TotalUv ? row.spend / d0TotalUv : 0,
+                d0TrialCancelRate: trialCancelRate,
+                d0TrialRate: install ? d0TrialUv / install * 100 : 0,
+                d0DirectBuyRate: install ? d0PaidUv / install * 100 : 0,
+                d0TotalConversionRate: install ? d0TotalUv / install * 100 : 0,
+                d3ChargeSuccessRate,
+                d3TrialCancelRate: Math.max(0, trialCancelRate - 2.3),
+                d3PaidCost: d0PaidUv ? row.spend / (d0PaidUv * 0.72) : 0,
+                d7ChargeSuccessRate,
+                d7TrialCancelRate: Math.max(0, trialCancelRate - 4.1),
+                d7PaidCost: d0PaidUv ? row.spend / (d0PaidUv * 0.91) : 0,
+                retentionUv,
+                retentionCost: retentionUv ? row.spend / retentionUv : 0,
+                retentionRate: install ? retentionUv / install * 100 : 0,
+                view3s,
+                view10s,
+                view25,
+                view50,
+                view75,
+                view100
+            };
+            return row._computedMetrics;
+        }
+
+        function getCellValue(row, key) {
+            const computed = getRowComputedMetrics(row);
+            if (metricCaliberMode === "af") {
+                const caliberKeyMap = {
+                    install: "afinstall",
+                    cpi: "afcpi",
+                    ipm: "afIpm",
+                    installCvr: "afInstallCvr"
+                };
+                if (caliberKeyMap[key] && caliberKeyMap[key] in computed) {
+                    return computed[caliberKeyMap[key]];
+                }
+            }
+            if (key in computed) {
+                return computed[key];
+            }
+            return row[key];
+        }
+
+        function getColumnDisplayLabel(key) {
+            if (key === "install") {
+                return metricCaliberMode === "af" ? "AF_INSTALL" : "内部激活";
+            }
+            if (key === "cpi") {
+                return metricCaliberMode === "af" ? "AF_CPI" : "内部CPI";
+            }
+            if (key === "ipm") {
+                return metricCaliberMode === "af" ? "AF_IPM" : "内部IPM";
+            }
+            if (key === "installCvr") {
+                return metricCaliberMode === "af" ? "AF_INSTALL CVR" : "内部激活CVR";
+            }
+            return columnsByKey[key]?.label || "";
+        }
+
+        function formatByColumn(column, value) {
+            if (value === null || value === undefined || value === "") {
+                return '<span class="muted">--</span>';
+            }
+            if (column.format === "currency") {
+                return Number(value).toFixed(2);
+            }
+            if (column.format === "integer") {
+                return formatInteger(value);
+            }
+            if (column.format === "decimal") {
+                return Number(value).toFixed(2);
+            }
+            if (column.format === "percent") {
+                return formatPercent(value);
+            }
+            return value;
+        }
+
+        function isMetricColumn(column) {
+            return column?.selectedGroup === "metric";
+        }
+
+        function wrapMetricDisplay(display) {
+            return `<span class="metric-stack"><span class="metric-icon">📈</span><span>${display}</span></span>`;
+        }
+
+        function renderMaterialTagList(tags) {
+            if (!Array.isArray(tags) || !tags.length) {
+                return '<span class="muted">--</span>';
+            }
+            return `<div class="tag-cell">${tags.map((tag) => `<span class="material-tag-badge">${tag}</span>`).join("")}</div>`;
+        }
+
+        function matchesKeyword(source, keyword) {
+            return String(source || "").toLowerCase().includes(String(keyword || "").trim().toLowerCase());
+        }
+
+        function inDateRange(value, start, end) {
+            if (!start && !end) {
+                return true;
+            }
+            if (!value) {
+                return false;
+            }
+            if (start && value < start) {
+                return false;
+            }
+            if (end && value > end) {
+                return false;
+            }
+            return true;
+        }
+
+        function parseDateValue(value) {
+            const [year, month, day] = String(value).split("-").map(Number);
+            return new Date(year, month - 1, day);
+        }
+
+        function formatDateValue(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        function getSelectedDateRange() {
+            let start = filters.dateStart.value || defaultDashboardDate;
+            let end = filters.dateEnd.value || start || defaultDashboardDate;
+            if (start > end) {
+                [start, end] = [end, start];
+            }
+            return { start, end };
+        }
+
+        function getRowCreatedDate(row) {
+            return String(row.createdAt || "").split("\n")[0] || "";
+        }
+
+        function getMetricFilterNumber(row, metricKey) {
+            const metricValueMap = {
+                spend: row.spend,
+                impressions: row.impressions,
+                clicks: row.clicks,
+                install: getCellValue(row, "install"),
+                ctr: row.ctr,
+                cpc: row.cpc,
+                cpi: getCellValue(row, "cpi")
+            };
+            return metricValueMap[metricKey];
+        }
+
+        function matchesNewScope(row) {
+            const createdDate = getRowCreatedDate(row);
+            const { end } = getSelectedDateRange();
+            if (filters.newScope.value === "全部") {
+                return true;
+            }
+            if (filters.newScope.value === "当日新增") {
+                return createdDate === end;
+            }
+            if (filters.newScope.value === "昨日新增") {
+                return createdDate === defaultDashboardDate;
+            }
+            if (filters.newScope.value === "本周新增") {
+                return createdDate >= dashboardWeekStartDate && createdDate <= dashboardReferenceDate;
+            }
+            return true;
+        }
+
+        function getDateRangeLabel(start, end) {
+            if (!start && !end) {
+                return "--";
+            }
+            return `${start || end} 至 ${end || start}`;
+        }
+
+        function getDateList(start, end) {
+            const dates = [];
+            let current = parseDateValue(start);
+            const endDate = parseDateValue(end);
+            while (current <= endDate) {
+                dates.push(formatDateValue(current));
+                current.setDate(current.getDate() + 1);
+            }
+            return dates;
+        }
+
+        function getWeekStart(date, startDay) {
+            const start = new Date(date);
+            const diff = (start.getDay() - startDay + 7) % 7;
+            start.setDate(start.getDate() - diff);
+            return start;
+        }
+
+        function getAggregateBucket(dateStr, mode) {
+            const date = parseDateValue(dateStr);
+            if (mode === "month") {
+                const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+                const label = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+                return {
+                    key: `month:${label}`,
+                    label,
+                    sortKey: formatDateValue(monthStart)
+                };
+            }
+
+            const weekStartDay = mode === "businessWeek" ? 4 : 1;
+            const start = getWeekStart(date, weekStartDay);
+            const end = new Date(start);
+            end.setDate(start.getDate() + 6);
+            return {
+                key: `${mode}:${formatDateValue(start)}`,
+                label: `${formatDateValue(start)} 至 ${formatDateValue(end)}`,
+                sortKey: formatDateValue(start)
+            };
+        }
+
+        function cloneTraceData(traceData, factor) {
+            return Object.fromEntries(Object.entries(traceData).map(([level, list]) => [
+                level,
+                list.map((item) => {
+                    const spend = Number((item.spend * factor).toFixed(2));
+                    const impressions = Math.max(0, Math.round(item.impressions * factor));
+                    const clicks = Math.max(0, Math.round(item.clicks * factor));
+                    return { ...item, spend, impressions, clicks };
+                })
+            ]));
+        }
+
+        function getDailyFactor(row, date, index) {
+            const materialSeed = Number(row.material.id.slice(-2)) || 11;
+            const daySeed = Number(String(date).slice(-2)) || 1;
+            const mixed = (materialSeed + daySeed + index * 3) % 7;
+            return 0.82 + mixed * 0.06;
+        }
+
+        function buildDailyRow(row, statDate, index) {
+            const factor = getDailyFactor(row, statDate, index);
+            const spend = Number((row.spend * factor).toFixed(2));
+            const impressions = Math.max(0, Math.round(row.impressions * factor));
+            const clicks = Math.max(0, Math.round(row.clicks * factor));
+            return {
+                ...row,
+                spend,
+                impressions,
+                clicks,
+                ctr: impressions ? clicks / impressions * 100 : 0,
+                cpc: clicks ? spend / clicks : 0,
+                hasSpend: spend > 0 ? "是" : "否",
+                statDate,
+                traceData: cloneTraceData(row.traceData, factor),
+                _computedMetrics: null,
+                _rowKey: `${row.material.id}__${statDate}`
+            };
+        }
+
+        function mergeTraceData(baseTraceData, nextTraceData) {
+            Object.keys(baseTraceData).forEach((level) => {
+                nextTraceData[level].forEach((item) => {
+                    const current = baseTraceData[level].find((traceItem) => traceItem.name === item.name);
+                    if (!current) {
+                        baseTraceData[level].push({ ...item });
+                        return;
+                    }
+                    current.spend = Number((current.spend + item.spend).toFixed(2));
+                    current.impressions += item.impressions;
+                    current.clicks += item.clicks;
+                });
+            });
+        }
+
+        function aggregateRowsByMaterial(sourceRows, dateLabel) {
+            const map = new Map();
+            sourceRows.forEach((row) => {
+                const key = row.material.id;
+                if (!map.has(key)) {
+                    map.set(key, {
+                        ...row,
+                        spend: 0,
+                        impressions: 0,
+                        clicks: 0,
+                        hasSpend: "否",
+                        statDate: dateLabel,
+                        traceData: { ads: [], adsets: [], campaigns: [], accounts: [] },
+                        _sourceRows: [],
+                        _computedMetrics: null,
+                        _rowKey: `${row.material.id}__aggregate`
+                    });
+                }
+
+                const target = map.get(key);
+                target.spend = Number((target.spend + row.spend).toFixed(2));
+                target.impressions += row.impressions;
+                target.clicks += row.clicks;
+                target.hasSpend = target.spend > 0 ? "是" : "否";
+                target._sourceRows.push(row);
+                mergeTraceData(target.traceData, row.traceData);
+            });
+
+            return Array.from(map.values()).map((row) => ({
+                ...row,
+                ctr: row.impressions ? row.clicks / row.impressions * 100 : 0,
+                cpc: row.clicks ? row.spend / row.clicks : 0,
+                _computedMetrics: null
+            }));
+        }
+
+        function aggregateRowsByDateMode(sourceRows, mode, dateRangeLabel) {
+            if (mode === "range") {
+                return aggregateRowsByMaterial(sourceRows, dateRangeLabel);
+            }
+
+            const bucketMap = new Map();
+            sourceRows.forEach((row) => {
+                const bucket = getAggregateBucket(row.statDate, mode);
+                if (!bucketMap.has(bucket.key)) {
+                    bucketMap.set(bucket.key, { ...bucket, rows: [] });
+                }
+                bucketMap.get(bucket.key).rows.push(row);
+            });
+
+            return Array.from(bucketMap.values())
+                .sort((a, b) => b.sortKey.localeCompare(a.sortKey))
+                .flatMap((bucket) => aggregateRowsByMaterial(bucket.rows, bucket.label).map((row) => ({
+                    ...row,
+                    _rowKey: `${row.material.id}__${bucket.key}`
+                })));
+        }
+
+        function getAggregateSummaryLabel(start, end) {
+            if (!aggregateDateToggle.checked) {
+                return "按日明细";
+            }
+            if (aggregateMode === "naturalWeek") {
+                return "按自然周汇总";
+            }
+            if (aggregateMode === "businessWeek") {
+                return "按业务周汇总";
+            }
+            if (aggregateMode === "month") {
+                return "按月汇总";
+            }
+            return getDateRangeLabel(start, end);
+        }
+
+        function renderAggregateModeButtons() {
+            aggregateModeButtons.forEach((button) => {
+                const isActive = aggregateMode === button.dataset.aggregateMode;
+                button.classList.toggle("active", isActive);
+                button.disabled = !aggregateDateToggle.checked;
+            });
+        }
+
+        function renderCaliberModeButtons() {
+            caliberModeButtons.forEach((button) => {
+                button.classList.toggle("active", metricCaliberMode === button.dataset.caliberMode);
+            });
+        }
+
+        function getBaseFilteredRows() {
+            const metricThreshold = Number(filters.metricValue.value);
+            const hasMetricThreshold = filters.metric.value !== "全部" && filters.metricValue.value !== "" && !Number.isNaN(metricThreshold);
+            return rows.filter((row) => {
+                const checks = [
+                    matchesNewScope(row),
+                    filters.product.value === "全部" || row.app === filters.product.value,
+                    filters.channel.value === "全部" || row.channel === filters.channel.value,
+                    filters.device.value === "全部" || row.device === filters.device.value,
+                    filters.materialTag.value === "全部" || (Array.isArray(row.materialTag) && row.materialTag.includes(filters.materialTag.value)),
+                    filters.launchMode.value === "全部" || row.launchMode === filters.launchMode.value,
+                    filters.deliveryRegion.value === "全部" || row.deliveryRegion === filters.deliveryRegion.value,
+                    filters.optimizer.value === "全部" || row.optimizer === filters.optimizer.value,
+                    filters.type.value === "全部" || row.type === filters.type.value,
+                    filters.creator.value === "全部" || row.creator === filters.creator.value,
+                    filters.designer.value === "全部" || row.designer === filters.designer.value,
+                    filters.isExperiment.value === "全部" || row.isExperiment === filters.isExperiment.value,
+                    filters.spendRegion.value === "全部" || row.region === filters.spendRegion.value,
+                    filters.kolLaunch.value === "全部" || row.kolLaunch === filters.kolLaunch.value,
+                    !filters.searchMaterial.value.trim() || matchesKeyword(row.material.name, filters.searchMaterial.value),
+                    !filters.searchAccount.value.trim() || matchesKeyword(row.account, filters.searchAccount.value),
+                    !filters.searchAccountId.value.trim() || matchesKeyword(getCellValue(row, "accountId"), filters.searchAccountId.value),
+                    !filters.searchCampaign.value.trim() || matchesKeyword(row.campaign, filters.searchCampaign.value),
+                    !filters.searchAdset.value.trim() || matchesKeyword(row.adset, filters.searchAdset.value),
+                    !filters.searchAd.value.trim() || matchesKeyword(row.ad, filters.searchAd.value),
+                    !filters.searchPlacementGroup.value.trim() || matchesKeyword(row.placementGroup, filters.searchPlacementGroup.value),
+                    inDateRange(row.firstDeliveryDate, filters.deliveryStart.value, filters.deliveryEnd.value),
+                    inDateRange(row.firstSpendDate, filters.firstSpendStart.value, filters.firstSpendEnd.value),
+                    inDateRange(row.firstLaunchDate, filters.firstLaunchStart.value, filters.firstLaunchEnd.value),
+                    !hasMetricThreshold || Number(getMetricFilterNumber(row, filters.metric.value) || 0) >= metricThreshold
+                ];
+                return checks.every(Boolean);
+            });
+        }
+
+        function buildFilterChips() {
+            const chips = [];
+            const { start, end } = getSelectedDateRange();
+
+            chips.push({
+                key: "dateRange",
+                text: `日期：${getDateRangeLabel(start, end)}`,
+                removable: start !== defaultDashboardDate || end !== defaultDashboardDate
+            });
+
+            if (filters.newScope.value !== "全部") {
+                chips.push({ key: "newScope", text: `素材投放时间：${filters.newScope.value}`, removable: true });
+            }
+
+            if (filters.product.value !== "全部") {
+                chips.push({ key: "product", text: `产品：${filters.product.value}`, removable: true });
+            }
+            if (filters.channel.value !== "全部") {
+                chips.push({ key: "channel", text: `渠道：${filters.channel.value}`, removable: true });
+            }
+            if (filters.device.value !== "全部") {
+                chips.push({ key: "device", text: `终端：${filters.device.value}`, removable: true });
+            }
+            if (filters.materialTag.value !== "全部") {
+                chips.push({ key: "materialTag", text: `素材标签：${filters.materialTag.value}`, removable: true });
+            }
+            if (filters.launchMode.value !== "全部") {
+                chips.push({ key: "launchMode", text: `投放模式：${filters.launchMode.value}`, removable: true });
+            }
+            if (filters.deliveryRegion.value !== "全部") {
+                chips.push({ key: "deliveryRegion", text: `投放地区：${filters.deliveryRegion.value}`, removable: true });
+            }
+            if (filters.optimizer.value !== "全部") {
+                chips.push({ key: "optimizer", text: `优化师：${filters.optimizer.value}`, removable: true });
+            }
+            if (filters.type.value !== "全部") {
+                chips.push({ key: "type", text: `素材类型：${filters.type.value}`, removable: true });
+            }
+            if (filters.creator.value !== "全部") {
+                chips.push({ key: "creator", text: `创意人：${filters.creator.value}`, removable: true });
+            }
+            if (filters.designer.value !== "全部") {
+                chips.push({ key: "designer", text: `素材师：${filters.designer.value}`, removable: true });
+            }
+            if (filters.isExperiment.value !== "全部") {
+                chips.push({ key: "isExperiment", text: `是否实验：${filters.isExperiment.value}`, removable: true });
+            }
+            if (filters.spendRegion.value !== "全部") {
+                chips.push({ key: "spendRegion", text: `消耗所在地区：${filters.spendRegion.value}`, removable: true });
+            }
+            if (filters.kolLaunch.value !== "全部") {
+                chips.push({ key: "kolLaunch", text: `KOL投放：${filters.kolLaunch.value}`, removable: true });
+            }
+            if (filters.searchMaterial.value.trim()) {
+                chips.push({ key: "searchMaterial", text: `素材名称：${filters.searchMaterial.value.trim()}`, removable: true });
+            }
+            if (filters.searchAccount.value.trim()) {
+                chips.push({ key: "searchAccount", text: `广告账户：${filters.searchAccount.value.trim()}`, removable: true });
+            }
+            if (filters.searchAccountId.value.trim()) {
+                chips.push({ key: "searchAccountId", text: `广告账户ID：${filters.searchAccountId.value.trim()}`, removable: true });
+            }
+            if (filters.searchCampaign.value.trim()) {
+                chips.push({ key: "searchCampaign", text: `广告系列：${filters.searchCampaign.value.trim()}`, removable: true });
+            }
+            if (filters.searchAdset.value.trim()) {
+                chips.push({ key: "searchAdset", text: `广告组：${filters.searchAdset.value.trim()}`, removable: true });
+            }
+            if (filters.searchAd.value.trim()) {
+                chips.push({ key: "searchAd", text: `广告：${filters.searchAd.value.trim()}`, removable: true });
+            }
+            if (filters.searchPlacementGroup.value.trim()) {
+                chips.push({ key: "searchPlacementGroup", text: `投放组：${filters.searchPlacementGroup.value.trim()}`, removable: true });
+            }
+            if (filters.deliveryStart.value || filters.deliveryEnd.value) {
+                chips.push({ key: "deliveryRange", text: `首次交付：${getDateRangeLabel(filters.deliveryStart.value || "--", filters.deliveryEnd.value || "--")}`, removable: true });
+            }
+            if (filters.firstSpendStart.value || filters.firstSpendEnd.value) {
+                chips.push({ key: "firstSpendRange", text: `首次消耗：${getDateRangeLabel(filters.firstSpendStart.value || "--", filters.firstSpendEnd.value || "--")}`, removable: true });
+            }
+            if (filters.firstLaunchStart.value || filters.firstLaunchEnd.value) {
+                chips.push({ key: "firstLaunchRange", text: `首次投放：${getDateRangeLabel(filters.firstLaunchStart.value || "--", filters.firstLaunchEnd.value || "--")}`, removable: true });
+            }
+            if (filters.metric.value !== "全部" && filters.metricValue.value !== "") {
+                const metricLabels = { spend: "消耗", impressions: "曝光", clicks: "点击", install: "install", ctr: "CTR", cpc: "CPC", cpi: "CPI" };
+                chips.push({ key: "metricFilter", text: `按指标：${metricLabels[filters.metric.value]} ≥ ${filters.metricValue.value}`, removable: true });
+            }
+
+            return chips;
+        }
+
+        function clearFilterChip(key) {
+            if (key === "newScope") {
+                filters.newScope.value = "全部";
+            } else if (key === "dateRange") {
+                filters.dateStart.value = defaultDashboardDate;
+                filters.dateEnd.value = defaultDashboardDate;
+            } else if (key === "deliveryRange") {
+                filters.deliveryStart.value = "";
+                filters.deliveryEnd.value = "";
+            } else if (key === "firstSpendRange") {
+                filters.firstSpendStart.value = "";
+                filters.firstSpendEnd.value = "";
+            } else if (key === "firstLaunchRange") {
+                filters.firstLaunchStart.value = "";
+                filters.firstLaunchEnd.value = "";
+            } else if (key === "metricFilter") {
+                filters.metric.value = "全部";
+                filters.metricValue.value = "";
+            } else if (filters[key]) {
+                filters[key].value = filters[key].tagName === "SELECT" ? "全部" : "";
+            }
+            renderTable();
+        }
+
+        function renderSelectedFilterSummary() {
+            const chips = buildFilterChips();
+            if (!chips.length) {
+                selectedFilterSummary.innerHTML = '<span class="filter-summary-empty">当前未选择额外筛选条件</span>';
+                return;
+            }
+
+            selectedFilterSummary.innerHTML = chips.map((chip) => `
+                <span class="filter-chip">
+                    <span class="filter-chip-text">${chip.text}</span>
+                    ${chip.removable ? `<button class="filter-chip-remove" type="button" data-filter-chip="${chip.key}" aria-label="移除条件">×</button>` : ""}
+                </span>
+            `).join("");
+
+            document.querySelectorAll("[data-filter-chip]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    clearFilterChip(button.dataset.filterChip);
+                });
+            });
+        }
+
+        function getDisplayRows() {
+            const baseRows = getBaseFilteredRows();
+            const { start, end } = getSelectedDateRange();
+            const selectedDates = getDateList(start, end);
+            const dailyRows = baseRows.flatMap((row) => selectedDates.map((date, index) => buildDailyRow(row, date, index)));
+
+            if (aggregateDateToggle.checked) {
+                return aggregateRowsByDateMode(dailyRows, aggregateMode, getDateRangeLabel(start, end));
+            }
+
+            return dailyRows.sort((a, b) => {
+                if (a.statDate === b.statDate) {
+                    return a.material.id.localeCompare(b.material.id);
+                }
+                return b.statDate.localeCompare(a.statDate);
+            });
+        }
+
+        function getSummaryRow(filteredRows) {
+            const totalMaterials = filteredRows.length;
+            const totalMountedAds = filteredRows.reduce((sum, row) => sum + row.mountedAds, 0);
+            const spendRows = filteredRows.filter((row) => row.spend > 0);
+            const totalSpend = filteredRows.reduce((sum, row) => sum + row.spend, 0);
+            const totalImpressions = filteredRows.reduce((sum, row) => sum + row.impressions, 0);
+            const totalClicks = filteredRows.reduce((sum, row) => sum + row.clicks, 0);
+            const totalCtr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+            const totalCpc = totalClicks > 0 ? totalSpend / totalClicks : 0;
+            const computedList = filteredRows.map(getRowComputedMetrics);
+            const totalInstall = computedList.reduce((sum, item) => sum + item.install, 0);
+            const totalAfinstall = computedList.reduce((sum, item) => sum + item.afinstall, 0);
+            const totalActivation = computedList.reduce((sum, item) => sum + item.activation, 0);
+            const totalD0Revenue = computedList.reduce((sum, item) => sum + item.d0Revenue, 0);
+            const totalD0TrialUv = computedList.reduce((sum, item) => sum + item.d0TrialUv, 0);
+            const totalD0PaidUv = computedList.reduce((sum, item) => sum + item.d0PaidUv, 0);
+            const totalD0Uv = computedList.reduce((sum, item) => sum + item.d0TotalUv, 0);
+            const totalRetentionUv = computedList.reduce((sum, item) => sum + item.retentionUv, 0);
+            const videoList = computedList.filter((item) => item.view3s !== null);
+            const avgVideoMetric = (key) => videoList.length ? videoList.reduce((sum, item) => sum + item[key], 0) / videoList.length : null;
+            const { start, end } = getSelectedDateRange();
+
+            return {
+                statDate: getAggregateSummaryLabel(start, end),
+                material: "汇总",
+                product: "",
+                channel: "",
+                device: "",
+                account: "",
+                accountId: "",
+                campaign: "",
+                adset: "",
+                ad: "",
+                type: "",
+                spendRegion: "",
+                firstDelivery: "",
+                firstSpend: "",
+                firstLaunch: "",
+                mountedAds: formatInteger(totalMountedAds),
+                hasSpend: formatInteger(spendRows.length),
+                spend: totalSpend,
+                install: totalInstall,
+                afinstall: totalAfinstall,
+                cpi: totalInstall ? totalSpend / totalInstall : 0,
+                afcpi: totalAfinstall ? totalSpend / totalAfinstall : 0,
+                cpa: totalActivation ? totalSpend / totalActivation : 0,
+                activation: totalActivation,
+                impressions: totalImpressions,
+                cpm: totalImpressions ? totalSpend * 1000 / totalImpressions : 0,
+                clicks: totalClicks,
+                cpc: totalCpc,
+                ctr: totalCtr,
+                ipm: totalImpressions ? totalInstall * 1000 / totalImpressions : 0,
+                afIpm: totalImpressions ? totalAfinstall * 1000 / totalImpressions : 0,
+                installCvr: totalClicks ? totalInstall / totalClicks * 100 : 0,
+                afInstallCvr: totalClicks ? totalAfinstall / totalClicks * 100 : 0,
+                d0Roi: totalSpend ? totalD0Revenue / totalSpend * 100 : 0,
+                d0Revenue: totalD0Revenue,
+                d0TrialUv: totalD0TrialUv,
+                d0TrialCost: totalD0TrialUv ? totalSpend / totalD0TrialUv : 0,
+                d0PaidUv: totalD0PaidUv,
+                d0PaidCost: totalD0PaidUv ? totalSpend / totalD0PaidUv : 0,
+                d0TotalUv: totalD0Uv,
+                d0TotalCost: totalD0Uv ? totalSpend / totalD0Uv : 0,
+                d0TrialCancelRate: totalD0TrialUv ? computedList.reduce((sum, item) => sum + item.d0TrialUv * item.d0TrialCancelRate, 0) / totalD0TrialUv : 0,
+                d0TrialRate: totalInstall ? totalD0TrialUv / totalInstall * 100 : 0,
+                d0DirectBuyRate: totalInstall ? totalD0PaidUv / totalInstall * 100 : 0,
+                d0TotalConversionRate: totalInstall ? totalD0Uv / totalInstall * 100 : 0,
+                d3ChargeSuccessRate: totalD0PaidUv ? computedList.reduce((sum, item) => sum + item.d0PaidUv * item.d3ChargeSuccessRate, 0) / totalD0PaidUv : 0,
+                d3TrialCancelRate: totalD0TrialUv ? computedList.reduce((sum, item) => sum + item.d0TrialUv * item.d3TrialCancelRate, 0) / totalD0TrialUv : 0,
+                d3PaidCost: totalD0PaidUv ? totalSpend / (totalD0PaidUv * 0.72) : 0,
+                d7ChargeSuccessRate: totalD0PaidUv ? computedList.reduce((sum, item) => sum + item.d0PaidUv * item.d7ChargeSuccessRate, 0) / totalD0PaidUv : 0,
+                d7TrialCancelRate: totalD0TrialUv ? computedList.reduce((sum, item) => sum + item.d0TrialUv * item.d7TrialCancelRate, 0) / totalD0TrialUv : 0,
+                d7PaidCost: totalD0PaidUv ? totalSpend / (totalD0PaidUv * 0.91) : 0,
+                retentionUv: totalRetentionUv,
+                retentionCost: totalRetentionUv ? totalSpend / totalRetentionUv : 0,
+                retentionRate: totalInstall ? totalRetentionUv / totalInstall * 100 : 0,
+                view3s: avgVideoMetric("view3s"),
+                view10s: avgVideoMetric("view10s"),
+                view25: avgVideoMetric("view25"),
+                view50: avgVideoMetric("view50"),
+                view75: avgVideoMetric("view75"),
+                view100: avgVideoMetric("view100")
+            };
+        }
+
+        function renderTableHead() {
+            tableHeadRow.innerHTML = visibleColumnKeys.map((key) => {
+                const column = columns.find((item) => item.key === key);
+                const className = `${column.align === "right" ? "align-right" : ""} ${column.key === "material" ? "col-material" : ""} ${column.key === "materialTag" ? "col-material-tag" : ""} ${column.key === "select" ? "col-select" : ""} ${column.key === "traceSummary" ? "col-trace" : ""}`;
+                if (column.key === "select") {
+                    return `<th class="${className}"><input class="table-check" type="checkbox" id="select-all-materials"></th>`;
+                }
+                return `<th class="${className}">${getColumnDisplayLabel(column.key)}</th>`;
+            }).join("");
+        }
+
+        function buildTrendChart(windowSize) {
+            const data = trendSeries.spend[windowSize];
+            const width = 250;
+            const height = 120;
+            const padding = { top: 10, right: 12, bottom: 22, left: 34 };
+            const maxValue = Math.max(...data);
+            const minValue = Math.min(...data);
+            const valueRange = Math.max(maxValue - minValue, 1);
+            const usableWidth = width - padding.left - padding.right;
+            const usableHeight = height - padding.top - padding.bottom;
+            const stepX = data.length > 1 ? usableWidth / (data.length - 1) : 0;
+            const points = data.map((value, index) => {
+                const x = padding.left + index * stepX;
+                const normalized = (value - minValue) / valueRange;
+                const y = padding.top + usableHeight - normalized * usableHeight;
+                return { x, y, value };
+            });
+            const path = points.map((point, index) => `${index === 0 ? "M" : "L"}${point.x.toFixed(2)} ${point.y.toFixed(2)}`).join(" ");
+            const yTicks = [0, 1, 2, 3, 4].map((index) => {
+                const ratio = index / 4;
+                const value = Math.round(maxValue - ratio * (maxValue - minValue));
+                const y = padding.top + ratio * usableHeight;
+                return { value, y };
+            });
+            const labels = data.map((value, index) => {
+                const text = `05-${String(index + 20).padStart(2, "0")}`;
+                return {
+                    x: points[index].x,
+                    text
+                };
+            });
+
+            const circles = points.map((point) => `
+                <circle cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="2.8" fill="#ffffff" stroke="#2563eb" stroke-width="1.6"></circle>
+            `).join("");
+
+            const gridLines = yTicks.map((tick) => `
+                <line x1="${padding.left}" y1="${tick.y}" x2="${width - padding.right}" y2="${tick.y}" stroke="#ecf0f5" stroke-width="1"></line>
+                <text x="${padding.left - 8}" y="${tick.y + 4}" text-anchor="end" fill="#94a3b8" font-size="10">${tick.value}</text>
+            `).join("");
+
+            const xLabels = labels.filter((label, index) => index === 0 || index === labels.length - 1 || index % Math.ceil(labels.length / 4) === 0).map((label) => `
+                <text x="${label.x}" y="${height - 4}" text-anchor="middle" fill="#94a3b8" font-size="10">${label.text}</text>
+            `).join("");
+
+            return `
+                <svg class="trend-chart" viewBox="0 0 ${width} ${height}" aria-hidden="true">
+                    ${gridLines}
+                    <path d="${path}" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    ${circles}
+                    ${xLabels}
+                </svg>
+            `;
+        }
+
+        function buildTrendPopover() {
+            return `
+                <div class="trend-popover">
+                    <div class="trend-arrow"></div>
+                    <div class="trend-head">
+                        <div class="trend-title">消耗趋势</div>
+                        <div class="trend-tabs">
+                            <button class="trend-tab active" type="button" data-window="7">7天</button>
+                            <button class="trend-tab" type="button" data-window="14">14天</button>
+                            <button class="trend-tab" type="button" data-window="30">30天</button>
+                        </div>
+                    </div>
+                    <div class="trend-chart-wrap">${buildTrendChart(7)}</div>
+                    <div class="trend-legend"><span class="trend-line"></span><span>消耗</span></div>
+                </div>
+            `;
+        }
+
+        function renderSummaryRow(summary) {
+            const cells = visibleColumnKeys.map((key) => {
+                const column = columns.find((item) => item.key === key);
+                const baseClass = `${column?.align === "right" ? "align-right " : ""}${column?.key === "materialTag" ? "col-material-tag " : ""}`;
+                if (key === "select") {
+                    return `<td class="col-select"></td>`;
+                }
+                if (key === "statDate") {
+                    return `<td class="${baseClass}summary-value">${summary.statDate || "-"}</td>`;
+                }
+                if (key === "material") {
+                    return `<td class="${baseClass}summary-value">汇总</td>`;
+                }
+                if (key === "traceSummary") {
+                    return `<td class="${baseClass}muted">-</td>`;
+                }
+                const value = summary[key];
+                if (value === undefined || value === null || value === "") {
+                    return `<td class="${baseClass}muted">-</td>`;
+                }
+                const display = formatByColumn(column, value);
+                return `<td class="${baseClass} ${key === "spend" ? "summary-blue" : "summary-value"}">${display}</td>`;
+            }).join("");
+            return `<tr class="summary-row">${cells}</tr>`;
+        }
+
+        function getTraceSummary(row) {
+            return `广告 ${row.traceData.ads.length} / 广告组 ${row.traceData.adsets.length} / 系列 ${row.traceData.campaigns.length} / 账户 ${row.traceData.accounts.length}`;
+        }
+
+        function renderRow(row, index) {
+            const cells = visibleColumnKeys.map((key) => {
+                const column = columns.find((item) => item.key === key);
+                const alignClass = column.align === "right" ? "align-right" : "";
+
+                if (key === "select") {
+                    return `<td class="col-select"><input class="table-check row-check" type="checkbox" data-material-id="${row.material.id}" ${selectedMaterialIds.includes(row.material.id) ? "checked" : ""}></td>`;
+                }
+
+                if (key === "statDate") {
+                    return `<td>${row.statDate || "--"}</td>`;
+                }
+
+                if (key === "material") {
+                    return `
+                        <td class="col-material">
+                            <div class="material-cell">
+                                <div class="thumb ${row.material.thumb}"></div>
+                                <div class="material-copy">
+                                    <button class="material-trigger" type="button" data-row-key="${row._rowKey}">
+                                        <div class="material-name">${row.material.name}</div>
+                                    </button>
+                                    <div class="material-id">${row.material.id}</div>
+                                </div>
+                            </div>
+                        </td>
+                    `;
+                }
+
+                if (key === "materialTag") {
+                    return `<td class="col-material-tag">${renderMaterialTagList(row.materialTag)}</td>`;
+                }
+
+                if (key === "traceSummary") {
+                    return `
+                        <td class="col-trace">
+                            <div class="trace-cell">
+                                <div class="trace-summary">${getTraceSummary(row)}</div>
+                                <button class="trace-action" type="button" data-row-key="${row._rowKey}">查看层级数据</button>
+                            </div>
+                        </td>
+                    `;
+                }
+
+                if (key === "hasSpend") {
+                    return `
+                        <td>
+                            <span class="pill ${row.hasSpend === "是" ? "pill-positive" : "pill-negative"}">${row.hasSpend}</span>
+                        </td>
+                    `;
+                }
+
+                if (key === "spend") {
+                    const popover = index === 2 ? buildTrendPopover() : "";
+                    const display = wrapMetricDisplay(formatByColumn(column, getCellValue(row, key)));
+                    return `
+                        <td class="${alignClass} spend-cell">
+                            <span class="${row.spend > 0 ? "metric-link" : "muted"}">${display}</span>
+                            ${popover}
+                        </td>
+                    `;
+                }
+
+                if (key === "createdAt") {
+                    return `<td>${formatCellMultiline(row[key])}</td>`;
+                }
+
+                if (key === "firstLaunch") {
+                    return `<td>${formatCellMultiline(row.firstLaunch)}</td>`;
+                }
+
+                if (key === "firstDelivery" || key === "firstSpend") {
+                    return `<td>${formatDateCell(getCellValue(row, key))}</td>`;
+                }
+
+                const value = getCellValue(row, key);
+                const display = formatByColumn(column, value);
+                return `<td class="${alignClass}">${isMetricColumn(column) ? wrapMetricDisplay(display) : display}</td>`;
+            }).join("");
+
+            return `<tr>${cells}</tr>`;
+        }
+
+        function getRowByKey(rowKey) {
+            return currentRowsByKey.get(rowKey);
+        }
+
+        function toggleRowSelection(rowId, checked) {
+            if (checked) {
+                if (!selectedMaterialIds.includes(rowId)) {
+                    selectedMaterialIds.push(rowId);
+                }
+            } else {
+                selectedMaterialIds = selectedMaterialIds.filter((id) => id !== rowId);
+            }
+            renderBulkToolbar();
+        }
+
+        function renderBulkToolbar() {
+            bulkCount.textContent = selectedMaterialIds.length;
+            bulkToolbar.classList.toggle("active", selectedMaterialIds.length > 0);
+        }
+
+        function bindSelectionEvents() {
+            const selectAll = document.getElementById("select-all-materials");
+            if (selectAll) {
+                const filteredIds = Array.from(new Set(currentFilteredRows.map((row) => row.material.id)));
+                selectAll.checked = filteredIds.length > 0 && filteredIds.every((id) => selectedMaterialIds.includes(id));
+                selectAll.addEventListener("change", (event) => {
+                    if (event.target.checked) {
+                        selectedMaterialIds = Array.from(new Set([...selectedMaterialIds, ...filteredIds]));
+                    } else {
+                        selectedMaterialIds = selectedMaterialIds.filter((id) => !filteredIds.includes(id));
+                    }
+                    renderTable();
+                });
+            }
+
+            document.querySelectorAll(".row-check").forEach((checkbox) => {
+                checkbox.addEventListener("change", (event) => {
+                    toggleRowSelection(event.target.dataset.materialId, event.target.checked);
+                    renderTable();
+                });
+            });
+
+            document.querySelectorAll(".material-trigger, .trace-action").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const row = getRowByKey(button.dataset.rowKey);
+                    openSingleDetail(row);
+                });
+            });
+        }
+
+        function getDetailLevelContext(row, level) {
+            if (level === "ads") {
+                return {
+                    adset: row.adset,
+                    campaign: row.campaign
+                };
+            }
+            if (level === "adsets") {
+                return {
+                    campaign: row.campaign
+                };
+            }
+            if (level === "campaigns") {
+                return {
+                    account: row.account
+                };
+            }
+            return {};
+        }
+
+        function aggregateByLevel(rowsForDetail, level) {
+            const map = new Map();
+            rowsForDetail.forEach((row) => {
+                row.traceData[level].forEach((item) => {
+                    const context = getDetailLevelContext(row, level);
+                    const groupKey = [item.name, context.adset || "", context.campaign || "", context.account || ""].join("||");
+                    if (!map.has(groupKey)) {
+                        map.set(groupKey, {
+                            name: item.name,
+                            adset: context.adset || "",
+                            campaign: context.campaign || "",
+                            account: context.account || "",
+                            spend: 0,
+                            impressions: 0,
+                            clicks: 0,
+                            materials: new Set()
+                        });
+                    }
+                    const target = map.get(groupKey);
+                    target.spend += item.spend;
+                    target.impressions += item.impressions;
+                    target.clicks += item.clicks;
+                    target.materials.add(row.material.name);
+                });
+            });
+
+            return Array.from(map.values()).map((item) => {
+                const ctr = item.impressions > 0 ? (item.clicks / item.impressions) * 100 : 0;
+                const cpc = item.clicks > 0 ? item.spend / item.clicks : 0;
+                return {
+                    name: item.name,
+                    adset: item.adset,
+                    campaign: item.campaign,
+                    account: item.account,
+                    spend: item.spend,
+                    impressions: item.impressions,
+                    clicks: item.clicks,
+                    ctr,
+                    cpc,
+                    materials: Array.from(item.materials)
+                };
+            }).sort((a, b) => b.spend - a.spend);
+        }
+
+        function formatDetailCell(column, item) {
+            if (column.format === "currency") {
+                return formatMoney(item[column.key]);
+            }
+            if (column.format === "integer") {
+                return formatInteger(item[column.key]);
+            }
+            if (column.format === "percent") {
+                return formatPercent(item[column.key]);
+            }
+            if (column.format === "decimal") {
+                return Number(item[column.key]).toFixed(2);
+            }
+            return item[column.key] || "--";
+        }
+
+        function buildDetailSummaryRow(rowsForDetail, aggregatedItems, columnsForLevel) {
+            if (!rowsForDetail.length || !aggregatedItems.length) {
+                return "";
+            }
+
+            const totals = aggregatedItems.reduce((result, item) => {
+                result.spend += item.spend;
+                result.impressions += item.impressions;
+                result.clicks += item.clicks;
+                return result;
+            }, { spend: 0, impressions: 0, clicks: 0 });
+            const totalCtr = totals.impressions > 0 ? (totals.clicks / totals.impressions) * 100 : 0;
+            const totalCpc = totals.clicks > 0 ? totals.spend / totals.clicks : 0;
+            const cells = columnsForLevel.map((column, index) => {
+                if (index === 0) {
+                    return "<td>汇总</td>";
+                }
+                if (column.key === "spend") {
+                    return `<td>${formatMoney(totals.spend)}</td>`;
+                }
+                if (column.key === "impressions") {
+                    return `<td>${formatInteger(totals.impressions)}</td>`;
+                }
+                if (column.key === "clicks") {
+                    return `<td>${formatInteger(totals.clicks)}</td>`;
+                }
+                if (column.key === "ctr") {
+                    return `<td>${formatPercent(totalCtr)}</td>`;
+                }
+                if (column.key === "cpc") {
+                    return `<td>${totalCpc.toFixed(2)}</td>`;
+                }
+                return '<td class="muted">-</td>';
+            }).join("");
+            return `
+                <tr class="summary-row">
+                    ${cells}
+                </tr>
+            `;
+        }
+
+        function renderDetailContent() {
+            const rowsForDetail = detailState.sourceRows;
+            const level = detailState.level;
+            const levelLabel = levelMeta[level].label;
+            const aggregated = aggregateByLevel(rowsForDetail, level);
+            const columnsForLevel = detailColumnMeta[level];
+
+            detailLevelTabs.innerHTML = Object.entries(levelMeta).map(([key, meta]) => `
+                <button class="level-tab ${key === detailState.level ? "active" : ""}" type="button" data-detail-level="${key}">${meta.label}</button>
+            `).join("");
+
+            detailSectionName.textContent = `关联${levelLabel}`;
+            detailTableHead.innerHTML = `
+                <tr>
+                    ${columnsForLevel.map((column) => `<th>${column.label}</th>`).join("")}
+                </tr>
+            `;
+            const summaryRowHtml = buildDetailSummaryRow(rowsForDetail, aggregated, columnsForLevel);
+            const detailRowsHtml = aggregated.length ? aggregated.map((item) => `
+                <tr>
+                    ${columnsForLevel.map((column) => `<td>${formatDetailCell(column, item)}</td>`).join("")}
+                </tr>
+            `).join("") : `<tr><td colspan="${columnsForLevel.length}" class="muted">暂无关联数据</td></tr>`;
+            detailTableBody.innerHTML = summaryRowHtml + detailRowsHtml;
+
+            document.querySelectorAll("[data-detail-level]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    detailState.level = button.dataset.detailLevel;
+                    renderDetailContent();
+                });
+            });
+        }
+
+        function openSingleDetail(row) {
+            detailState = {
+                mode: "single",
+                level: "ads",
+                sourceRows: row._sourceRows ? row._sourceRows : [row]
+            };
+            detailTitle.textContent = row.material.name;
+            detailDescription.textContent = "先看该素材整体表现，再按广告、广告组、广告系列、广告账户逐层追溯。";
+            detailTags.innerHTML = `
+                <span class="detail-tag">${row.statDate || defaultDashboardDate}</span>
+                <span class="detail-tag">${row.type}</span>
+                <span class="detail-tag">${row.app}</span>
+                <span class="detail-tag">${row.channel}</span>
+                <span class="detail-tag">搭建广告 ${row.mountedAds}</span>
+            `;
+            openDetailDrawer();
+        }
+
+        function openBulkDetail(level) {
+            const selectedRows = currentFilteredRows.filter((row) => selectedMaterialIds.includes(row.material.id));
+            if (!selectedRows.length) {
+                return;
+            }
+            const selectedNames = Array.from(new Set(selectedRows.map((row) => row.material.name)));
+            detailState = {
+                mode: "bulk",
+                level,
+                sourceRows: selectedRows
+            };
+            detailTitle.textContent = "多素材关联层级分析";
+            detailDescription.textContent = "先选中多条素材，再按上层层级去重聚合，查看这些素材挂载到哪些对象以及整体数据表现。";
+            detailTags.innerHTML = selectedNames.slice(0, 4).map((name) => `<span class="detail-tag">${name}</span>`).join("") + (selectedNames.length > 4 ? `<span class="detail-tag">+${selectedNames.length - 4} 条</span>` : "");
+            openDetailDrawer();
+        }
+
+        function openDetailDrawer() {
+            detailMask.classList.add("active");
+            detailDrawer.classList.add("active");
+            detailDrawer.setAttribute("aria-hidden", "false");
+            renderDetailContent();
+        }
+
+        function closeDetailDrawer() {
+            detailMask.classList.remove("active");
+            detailDrawer.classList.remove("active");
+            detailDrawer.setAttribute("aria-hidden", "true");
+        }
+
+        function bindTrendTabs() {
+            document.querySelectorAll(".trend-popover").forEach((popover) => {
+                const wrap = popover.querySelector(".trend-chart-wrap");
+                const tabs = popover.querySelectorAll(".trend-tab");
+                tabs.forEach((tab) => {
+                    tab.addEventListener("click", () => {
+                        tabs.forEach((item) => item.classList.remove("active"));
+                        tab.classList.add("active");
+                        wrap.innerHTML = buildTrendChart(tab.dataset.window);
+                    });
+                });
+            });
+        }
+
+        function renderTable() {
+            const filteredRows = getDisplayRows();
+            currentFilteredRows = filteredRows;
+            currentRowsByKey = new Map(filteredRows.map((row) => [row._rowKey, row]));
+            renderSelectedFilterSummary();
+            renderAggregateModeButtons();
+            renderCaliberModeButtons();
+            renderTableHead();
+
+            if (!filteredRows.length) {
+                tableBody.innerHTML = `<tr><td colspan="${visibleColumnKeys.length}" class="empty-state">当前筛选条件下暂无素材数据</td></tr>`;
+                renderBulkToolbar();
+                return;
+            }
+
+            const summary = getSummaryRow(filteredRows);
+            const summaryRow = renderSummaryRow(summary);
+            const bodyRows = filteredRows.map((row, index) => renderRow(row, index)).join("");
+            tableBody.innerHTML = summaryRow + bodyRows;
+            bindTrendTabs();
+            bindSelectionEvents();
+            renderBulkToolbar();
+        }
+
+        function getColumnsForCategory(categoryId) {
+            const configurable = columns.filter((column) => column.configurable);
+            if (categoryId === "all") {
+                return Object.keys(columnCategoryLabels).map((key) => ({
+                    id: key,
+                    title: columnCategoryLabels[key],
+                    columns: configurable.filter((column) => column.category === key)
+                }));
+            }
+            return [{
+                id: categoryId,
+                title: columnCategoryLabels[categoryId],
+                columns: configurable.filter((column) => column.category === categoryId)
+            }];
+        }
+
+        function renderColumnDrawer() {
+            columnCategoryList.innerHTML = columnCategoryMeta.map((item) => `
+                <button class="column-category-item ${activeColumnCategory === item.id ? "active" : ""}" type="button" data-column-category="${item.id}">${item.label}</button>
+            `).join("");
+
+            const sections = getColumnsForCategory(activeColumnCategory);
+            columnMetricsSections.innerHTML = sections.map((section) => {
+                const allSelected = section.columns.every((column) => draftColumnKeys.includes(column.key));
+                return `
+                    <div class="column-section">
+                        <div class="column-section-head">
+                            <div class="column-section-title">
+                                <span>${section.title}</span>
+                                ${section.id === "dimensions" ? '<span class="column-section-subtitle">按层级隔离</span>' : ""}
+                            </div>
+                            <button class="column-link-button" type="button" data-select-section="${section.id}">${allSelected ? "取消全选" : "全选"}</button>
+                        </div>
+                        <div class="column-section-grid">
+                            ${section.columns.map((column) => `
+                                <label class="column-option ${column.key === "material" ? "disabled" : ""}">
+                                    <input type="checkbox" data-column-key="${column.key}" ${draftColumnKeys.includes(column.key) ? "checked" : ""} ${column.key === "material" ? "disabled" : ""}>
+                                    <span>${column.label}</span>
+                                </label>
+                            `).join("")}
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            const selectedColumns = draftColumnKeys.map((key) => columnsByKey[key]).filter(Boolean);
+            const selectedDimensions = selectedColumns.filter((column) => column.selectedGroup === "dimension");
+            const selectedMetrics = selectedColumns.filter((column) => column.selectedGroup === "metric");
+            columnSelectedCount.textContent = selectedColumns.length;
+            selectedDimensionList.innerHTML = selectedDimensions.length ? `<div class="selected-chip-list">${selectedDimensions.map((column) => `
+                <div class="selected-chip">
+                    <div class="selected-chip-left">
+                        <span class="selected-chip-icon">↕</span>
+                        <span class="selected-chip-text">${column.label}</span>
+                    </div>
+                    <span class="selected-chip-fixed">${column.key === "material" ? "必选" : ""}</span>
+                </div>
+            `).join("")}</div>` : '<div class="column-empty">暂无已选维度</div>';
+            selectedMetricList.innerHTML = selectedMetrics.length ? `<div class="selected-chip-list">${selectedMetrics.map((column) => `
+                <div class="selected-chip">
+                    <div class="selected-chip-left">
+                        <span class="selected-chip-icon">↕</span>
+                        <span class="selected-chip-text">${column.label}</span>
+                    </div>
+                </div>
+            `).join("")}</div>` : '<div class="column-empty">暂无已选指标</div>';
+
+            document.querySelectorAll("[data-column-category]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    activeColumnCategory = button.dataset.columnCategory;
+                    renderColumnDrawer();
+                });
+            });
+
+            document.querySelectorAll("[data-column-key]").forEach((input) => {
+                input.addEventListener("change", (event) => {
+                    const key = event.target.dataset.columnKey;
+                    if (event.target.checked) {
+                        if (!draftColumnKeys.includes(key)) {
+                            draftColumnKeys.push(key);
+                        }
+                    } else {
+                        draftColumnKeys = draftColumnKeys.filter((item) => item !== key);
+                        if (!draftColumnKeys.includes("material")) {
+                            draftColumnKeys.unshift("material");
+                        }
+                    }
+                    renderColumnDrawer();
+                });
+            });
+
+            document.querySelectorAll("[data-select-section]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const sectionId = button.dataset.selectSection;
+                    const keys = columns.filter((column) => column.category === sectionId && column.configurable && column.key !== "material").map((column) => column.key);
+                    const allSelected = keys.every((key) => draftColumnKeys.includes(key));
+                    if (allSelected) {
+                        draftColumnKeys = draftColumnKeys.filter((key) => !keys.includes(key));
+                    } else {
+                        draftColumnKeys = Array.from(new Set([...draftColumnKeys, ...keys]));
+                    }
+                    if (!draftColumnKeys.includes("material")) {
+                        draftColumnKeys.unshift("material");
+                    }
+                    renderColumnDrawer();
+                });
+            });
+        }
+
+        function openDrawer() {
+            draftColumnKeys = visibleColumnKeys.filter((key) => !fixedColumnKeys.includes(key));
+            activeColumnCategory = "all";
+            renderColumnDrawer();
+            document.getElementById("drawer-mask").classList.add("active");
+            document.getElementById("column-drawer").classList.add("active");
+            document.getElementById("column-drawer").setAttribute("aria-hidden", "false");
+        }
+
+        function closeDrawer() {
+            document.getElementById("drawer-mask").classList.remove("active");
+            document.getElementById("column-drawer").classList.remove("active");
+            document.getElementById("column-drawer").setAttribute("aria-hidden", "true");
+        }
+
+        function resetFilters() {
+            Object.values(filters).forEach((element) => {
+                if (element.id === "filter-date-start" || element.id === "filter-date-end") {
+                    element.value = defaultDashboardDate;
+                } else if (element.id === "filter-new-scope") {
+                    element.value = defaultNewScope;
+                } else if (element.tagName === "SELECT") {
+                    element.value = "全部";
+                } else {
+                    element.value = "";
+                }
+            });
+            renderTable();
+        }
+
+        document.getElementById("apply-filters").addEventListener("click", renderTable);
+        document.getElementById("reset-filters").addEventListener("click", resetFilters);
+        toggleFilterFieldsButton.addEventListener("click", () => {
+            filterExpanded = !filterExpanded;
+            renderFilterCollapse();
+        });
+        document.getElementById("open-column-drawer").addEventListener("click", openDrawer);
+        document.getElementById("save-view-button").addEventListener("click", () => {
+            window.alert("已根据当前筛选、聚合方式和列配置另存为视图（示意）。");
+        });
+        aggregateDateToggle.addEventListener("change", renderTable);
+        aggregateModeButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                aggregateMode = button.dataset.aggregateMode;
+                if (!aggregateDateToggle.checked) {
+                    aggregateDateToggle.checked = true;
+                }
+                renderTable();
+            });
+        });
+        caliberModeButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                metricCaliberMode = button.dataset.caliberMode;
+                renderTable();
+            });
+        });
+        document.getElementById("drawer-mask").addEventListener("click", closeDrawer);
+        document.getElementById("close-drawer").addEventListener("click", closeDrawer);
+        document.getElementById("cancel-columns").addEventListener("click", closeDrawer);
+        document.getElementById("close-detail-drawer").addEventListener("click", closeDetailDrawer);
+        detailMask.addEventListener("click", closeDetailDrawer);
+        document.getElementById("clear-selection").addEventListener("click", () => {
+            selectedMaterialIds = [];
+            renderTable();
+        });
+        document.querySelectorAll("[data-bulk-level]").forEach((button) => {
+            button.addEventListener("click", () => {
+                openBulkDetail(button.dataset.bulkLevel);
+            });
+        });
+
+        document.getElementById("clear-columns").addEventListener("click", () => {
+            draftColumnKeys = ["material"];
+            renderColumnDrawer();
+        });
+
+        document.getElementById("reset-columns").addEventListener("click", () => {
+            draftColumnKeys = [...defaultConfigurableColumnKeys];
+            renderColumnDrawer();
+        });
+
+        document.getElementById("save-columns").addEventListener("click", () => {
+            if (!draftColumnKeys.includes("material")) {
+                draftColumnKeys.unshift("material");
+            }
+            visibleColumnKeys = [...fixedColumnKeys, ...draftColumnKeys];
+            renderTable();
+            closeDrawer();
+        });
+
+        window.addEventListener("resize", renderFilterCollapse);
+
+        renderFilterCollapse();
+        renderColumnDrawer();
+        renderTable();
+    </script>
+</body>
+</html>
